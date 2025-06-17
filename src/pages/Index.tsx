@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,24 @@ const Index = () => {
     videoFile: null as File | null,
     endorsement: ""
   });
+
+  // Dynamic header text state
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const words = ["Candidates", "Colleagues", "Friends", "Family"];
+
+  // Cycle through words with fade transition
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsVisible(false);
+      setTimeout(() => {
+        setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+        setIsVisible(true);
+      }, 200);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleFileUpload = (file: File, type: 'resume' | 'video') => {
     if (type === 'resume') {
@@ -220,11 +239,18 @@ const Index = () => {
 
           {/* Right Column - Marketing Content */}
           <div className="space-y-8">
-            {/* Hero Section */}
+            {/* Hero Section with Dynamic Header */}
             <div className="text-center lg:text-left">
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                Elevate Candidates Above the 
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> Noise</span>
+                Elevate{" "}
+                <span 
+                  className={`text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 transition-opacity duration-200 ${
+                    isVisible ? 'opacity-100' : 'opacity-0'
+                  }`}
+                >
+                  {words[currentWordIndex]}
+                </span>{" "}
+                Above the Noise
               </h2>
               <p className="text-lg text-gray-600 mb-8">
                 ReferIQ transforms employee referrals through video storytelling and AI-driven analysis, 
