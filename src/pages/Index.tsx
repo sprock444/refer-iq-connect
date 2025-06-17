@@ -1,15 +1,63 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Play, Users, TrendingUp, Award, Video, FileText, Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Play, Users, TrendingUp, Award, Video, FileText, Send, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    referrerName: "",
+    referrerEmail: "",
+    candidateName: "",
+    candidateEmail: "",
+    relationship: "",
+    position: "",
+    linkedinUrl: "",
+    resumeFile: null as File | null,
+    videoFile: null as File | null,
+    endorsement: ""
+  });
+
+  const handleFileUpload = (file: File, type: 'resume' | 'video') => {
+    if (type === 'resume') {
+      setFormData({ ...formData, resumeFile: file });
+    } else {
+      setFormData({ ...formData, videoFile: file });
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Referral Submitted!",
+      description: "Your referral has been processed and will be reviewed by our AI system.",
+    });
+    // Reset form
+    setFormData({
+      referrerName: "",
+      referrerEmail: "",
+      candidateName: "",
+      candidateEmail: "",
+      relationship: "",
+      position: "",
+      linkedinUrl: "",
+      resumeFile: null,
+      videoFile: null,
+      endorsement: ""
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,135 +76,225 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
-            Reinventing Employee Referrals
-          </Badge>
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
-            Elevate Candidates Above the 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> Noise</span>
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            ReferIQ transforms employee referrals through video storytelling and AI-driven analysis, 
-            helping great candidates stand out and hiring managers find the perfect fit faster.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate('/refer')} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-              <Video className="w-5 h-5 mr-2" />
-              Start a Referral
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/dashboard')}>
-              <Users className="w-5 h-5 mr-2" />
-              View Dashboard
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Why ReferIQ Works</h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Our platform combines the personal touch of employee endorsements with AI-powered insights
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Video className="w-6 h-6 text-blue-600" />
-                </div>
-                <CardTitle>Video Storytelling</CardTitle>
-                <CardDescription>
-                  60-90 second endorsement videos that capture the personal connection and enthusiasm
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
-                </div>
-                <CardTitle>AI-Powered Analysis</CardTitle>
-                <CardDescription>
-                  Sentiment analysis, role fit scoring, and cultural alignment assessment
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Award className="w-6 h-6 text-purple-600" />
-                </div>
-                <CardTitle>Structured Process</CardTitle>
-                <CardDescription>
-                  Organized workflow that elevates referrals above traditional applicant tracking noise
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Process Flow */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h3>
-            <p className="text-lg text-gray-600">Simple, effective, and powerful</p>
-          </div>
-          
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">1</div>
-              <h4 className="font-semibold mb-2">Record Video</h4>
-              <p className="text-sm text-gray-600">Employee records endorsement video explaining the candidate's fit</p>
+      {/* Main Content - Two Column Layout */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left Column - Referral Form */}
+          <div className="space-y-6">
+            <div>
+              <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
+                Reinventing Employee Referrals
+              </Badge>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Referrer Info</h2>
             </div>
             
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">2</div>
-              <h4 className="font-semibold mb-2">AI Analysis</h4>
-              <p className="text-sm text-gray-600">System analyzes sentiment, role fit, and cultural alignment</p>
+            <Card>
+              <CardContent className="p-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Referrer Information */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="referrerName">Your Name</Label>
+                      <Input
+                        id="referrerName"
+                        value={formData.referrerName}
+                        onChange={(e) => setFormData({ ...formData, referrerName: e.target.value })}
+                        placeholder="Input field"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="referrerEmail">Your Email</Label>
+                      <Input
+                        id="referrerEmail"
+                        type="email"
+                        value={formData.referrerEmail}
+                        onChange={(e) => setFormData({ ...formData, referrerEmail: e.target.value })}
+                        placeholder="Input field"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Candidate Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Candidate Info</h3>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <Input
+                          value={formData.candidateName}
+                          onChange={(e) => setFormData({ ...formData, candidateName: e.target.value })}
+                          placeholder="Add text"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          value={formData.candidateEmail}
+                          onChange={(e) => setFormData({ ...formData, candidateEmail: e.target.value })}
+                          placeholder="Add text"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <Input
+                          value={formData.position}
+                          onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                          placeholder="Add text"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          value={formData.linkedinUrl}
+                          onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
+                          placeholder="Add text"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <Select value={formData.relationship} onValueChange={(value) => setFormData({ ...formData, relationship: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Add text" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="friend">Friend</SelectItem>
+                          <SelectItem value="former-colleague">Former Colleague</SelectItem>
+                          <SelectItem value="family">Family</SelectItem>
+                          <SelectItem value="classmate">Classmate</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Video Endorsement */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Video Endorsement</h3>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors mb-4">
+                      <input
+                        type="file"
+                        id="video"
+                        accept="video/*"
+                        onChange={(e) => e.target.files && handleFileUpload(e.target.files[0], 'video')}
+                        className="hidden"
+                      />
+                      <label htmlFor="video" className="cursor-pointer">
+                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-sm text-gray-600">
+                          {formData.videoFile ? formData.videoFile.name : "Add text"}
+                        </p>
+                      </label>
+                    </div>
+                    
+                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                      <Send className="w-4 h-4 mr-2" />
+                      Submit Via Email
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Marketing Content */}
+          <div className="space-y-8">
+            {/* Hero Section */}
+            <div className="text-center lg:text-left">
+              <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
+                Reinventing Employee Referrals
+              </Badge>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                Elevate Candidates Above the 
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> Noise</span>
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
+                ReferIQ transforms employee referrals through video storytelling and AI-driven analysis, 
+                helping great candidates stand out and hiring managers find the perfect fit faster.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                  <Video className="w-5 h-5 mr-2" />
+                  Start a Referral
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => navigate('/dashboard')}>
+                  <Users className="w-5 h-5 mr-2" />
+                  View Dashboard
+                </Button>
+              </div>
             </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">3</div>
-              <h4 className="font-semibold mb-2">Smart Delivery</h4>
-              <p className="text-sm text-gray-600">Referral sent via email, Slack, or Teams with rich context</p>
+
+            {/* Why ReferIQ Works */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center lg:text-left">Why ReferIQ Works</h3>
+              <p className="text-gray-600 mb-6 text-center lg:text-left">
+                Our platform combines the personal touch of employee endorsements with AI-powered insights
+              </p>
+              
+              <div className="grid gap-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Video className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Video Storytelling</h4>
+                    <p className="text-sm text-gray-600">
+                      60-90 second endorsement videos that capture the personal connection and enthusiasm
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">AI-Powered Analysis</h4>
+                    <p className="text-sm text-gray-600">
+                      Sentiment analysis, role fit scoring, and cultural alignment assessment
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Award className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Structured Process</h4>
+                    <p className="text-sm text-gray-600">
+                      Organized workflow that elevates referrals above traditional applicant tracking noise
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">4</div>
-              <h4 className="font-semibold mb-2">Track Results</h4>
-              <p className="text-sm text-gray-600">Monitor progress and get feedback on referral success</p>
+
+            {/* How It Works */}
+            <div className="bg-gray-100 rounded-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">How It Works</h3>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                  <p className="text-sm text-gray-700">Record endorsement video explaining candidate's fit</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                  <p className="text-sm text-gray-700">AI analyzes sentiment, role fit, and cultural alignment</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                  <p className="text-sm text-gray-700">Smart delivery via email, Slack, or Teams with rich context</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
+                  <p className="text-sm text-gray-700">Track progress and get feedback on referral success</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-3xl font-bold text-white mb-4">Ready to Transform Your Referrals?</h3>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join companies that are seeing 25% higher conversion rates with video-powered referrals
-          </p>
-          <Button size="lg" variant="secondary" onClick={() => navigate('/refer')}>
-            <Play className="w-5 h-5 mr-2" />
-            Get Started Today
-          </Button>
-        </div>
-      </section>
+      </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-12 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
