@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,6 +29,7 @@ const Index = () => {
   // Dynamic header text state
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [rotationCount, setRotationCount] = useState(0);
   const words = ["Candidates", "Colleagues", "Friends", "Family"];
 
   // Cycle through words with fade transition
@@ -37,13 +37,29 @@ const Index = () => {
     const interval = setInterval(() => {
       setIsVisible(false);
       setTimeout(() => {
-        setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+        setCurrentWordIndex((prevIndex) => {
+          const nextIndex = (prevIndex + 1) % words.length;
+          
+          // If we're back to "Candidates" (index 0), increment rotation count
+          if (nextIndex === 0) {
+            setRotationCount(prev => prev + 1);
+          }
+          
+          return nextIndex;
+        });
         setIsVisible(true);
       }, 200);
-    }, 2500);
+    }, 5000);
+
+    // Stop after 2 complete rotations
+    if (rotationCount >= 2) {
+      clearInterval(interval);
+      // Ensure we end on "Candidates"
+      setCurrentWordIndex(0);
+    }
 
     return () => clearInterval(interval);
-  }, []);
+  }, [rotationCount]);
 
   const handleFileUpload = (file: File, type: 'resume' | 'video') => {
     if (type === 'resume') {
