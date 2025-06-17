@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -209,16 +208,6 @@ const Index = () => {
                 ReferIQ transforms employee referrals through video storytelling and AI-driven analysis, 
                 helping great candidates stand out and hiring managers find the perfect fit faster.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                  <Video className="w-5 h-5 mr-2" />
-                  Start a Referral
-                </Button>
-                <Button size="lg" variant="outline" onClick={() => navigate('/dashboard')}>
-                  <Users className="w-5 h-5 mr-2" />
-                  View Dashboard
-                </Button>
-              </div>
             </div>
 
             {/* Why ReferIQ Works */}
