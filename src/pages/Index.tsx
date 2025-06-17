@@ -137,7 +137,7 @@ const Index = () => {
                         <Input
                           value={formData.position}
                           onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                          placeholder="Target position"
+                          placeholder="Job Posting Link"
                         />
                       </div>
                       <div>
