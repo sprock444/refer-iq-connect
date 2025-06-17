@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -187,26 +186,32 @@ const Index = () => {
                   {/* Video Endorsement */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Video Endorsement</h3>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors mb-4">
-                      <input
-                        type="file"
-                        id="video"
-                        accept="video/*"
-                        onChange={(e) => e.target.files && handleFileUpload(e.target.files[0], 'video')}
-                        className="hidden"
-                      />
-                      <label htmlFor="video" className="cursor-pointer">
-                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600">
-                          {formData.videoFile ? formData.videoFile.name : "Add text"}
-                        </p>
-                      </label>
+                    <div className="space-y-4">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
+                        <input
+                          type="file"
+                          id="video"
+                          accept="video/*"
+                          capture="user"
+                          onChange={(e) => e.target.files && handleFileUpload(e.target.files[0], 'video')}
+                          className="hidden"
+                        />
+                        <label htmlFor="video" className="cursor-pointer">
+                          <Video className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 mb-1">
+                            {formData.videoFile ? formData.videoFile.name : "Record Video Endorsement"}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Tap to use camera or select existing video
+                          </p>
+                        </label>
+                      </div>
+                      
+                      <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                        <Send className="w-4 h-4 mr-2" />
+                        Submit Via Email
+                      </Button>
                     </div>
-                    
-                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                      <Send className="w-4 h-4 mr-2" />
-                      Submit Via Email
-                    </Button>
                   </div>
                 </form>
               </CardContent>
