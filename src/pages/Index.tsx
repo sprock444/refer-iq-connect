@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -81,9 +82,6 @@ const Index = () => {
           {/* Left Column - Referral Form */}
           <div className="space-y-6">
             <div>
-              <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
-                Reinventing Employee Referrals
-              </Badge>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Start a Referral Now...</h2>
             </div>
             
@@ -219,9 +217,6 @@ const Index = () => {
           <div className="space-y-8">
             {/* Hero Section */}
             <div className="text-center lg:text-left">
-              <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
-                Reinventing Employee Referrals
-              </Badge>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
                 Elevate Candidates Above the 
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> Noise</span>
