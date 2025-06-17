@@ -121,14 +121,14 @@ const Index = () => {
                         <Input
                           value={formData.candidateName}
                           onChange={(e) => setFormData({ ...formData, candidateName: e.target.value })}
-                          placeholder="Add text"
+                          placeholder="Candidate's full name"
                         />
                       </div>
                       <div>
                         <Input
                           value={formData.candidateEmail}
                           onChange={(e) => setFormData({ ...formData, candidateEmail: e.target.value })}
-                          placeholder="Add text"
+                          placeholder="candidate@email.com"
                         />
                       </div>
                     </div>
@@ -137,21 +137,21 @@ const Index = () => {
                         <Input
                           value={formData.position}
                           onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                          placeholder="Add text"
+                          placeholder="Target position"
                         />
                       </div>
                       <div>
                         <Input
                           value={formData.linkedinUrl}
                           onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
-                          placeholder="Add text"
+                          placeholder="LinkedIn profile URL"
                         />
                       </div>
                     </div>
                     <div className="mb-4">
                       <Select value={formData.relationship} onValueChange={(value) => setFormData({ ...formData, relationship: value })}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Add text" />
+                          <SelectValue placeholder="Select your relationship" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="friend">Friend</SelectItem>
