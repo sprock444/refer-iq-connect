@@ -84,7 +84,7 @@ const Index = () => {
               <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
                 Reinventing Employee Referrals
               </Badge>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Referrer Info</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Start a Referral Now...</h2>
             </div>
             
             <Card>
