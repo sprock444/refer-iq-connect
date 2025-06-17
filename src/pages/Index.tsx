@@ -137,7 +137,7 @@ const Index = () => {
                         <Input
                           value={formData.position}
                           onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                          placeholder="Job Posting Link"
+                          placeholder="Target position"
                         />
                       </div>
                       <div>
@@ -161,6 +161,28 @@ const Index = () => {
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    
+                    {/* Resume Upload */}
+                    <div className="mb-4">
+                      <Label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
+                        Resume Upload
+                      </Label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                        <input
+                          type="file"
+                          id="resume"
+                          accept=".pdf,.doc,.docx"
+                          onChange={(e) => e.target.files && handleFileUpload(e.target.files[0], 'resume')}
+                          className="hidden"
+                        />
+                        <label htmlFor="resume" className="cursor-pointer">
+                          <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600">
+                            {formData.resumeFile ? formData.resumeFile.name : "Click to upload resume (PDF, DOC, DOCX)"}
+                          </p>
+                        </label>
+                      </div>
                     </div>
                   </div>
 
