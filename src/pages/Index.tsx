@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Play, Users, TrendingUp, Award, Video, FileText, Send, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { EmailPreview } from "@/components/email";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -250,6 +252,20 @@ const Index = () => {
                           </p>
                         </label>
                       </div>
+                      
+                      <div>
+                        <Label htmlFor="endorsement">Written Endorsement (Optional)</Label>
+                        <Textarea
+                          id="endorsement"
+                          value={formData.endorsement}
+                          onChange={(e) => setFormData({ ...formData, endorsement: e.target.value })}
+                          placeholder="Tell us why this candidate would be a great fit..."
+                          rows={3}
+                        />
+                      </div>
+
+                      {/* Email Preview Component */}
+                      <EmailPreview formData={formData} />
                       
                       <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
                         <Send className="w-4 h-4 mr-2" />
