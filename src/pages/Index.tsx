@@ -150,14 +150,18 @@ const Index = () => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Candidate Info</h3>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
+                        <Label htmlFor="candidateName">Candidate Name</Label>
                         <Input
+                          id="candidateName"
                           value={formData.candidateName}
                           onChange={(e) => setFormData({ ...formData, candidateName: e.target.value })}
                           placeholder="Candidate's full name"
                         />
                       </div>
                       <div>
+                        <Label htmlFor="candidateEmail">Candidate Email</Label>
                         <Input
+                          id="candidateEmail"
                           value={formData.candidateEmail}
                           onChange={(e) => setFormData({ ...formData, candidateEmail: e.target.value })}
                           placeholder="candidate@email.com"
@@ -166,14 +170,18 @@ const Index = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
+                        <Label htmlFor="position">Job Posting</Label>
                         <Input
+                          id="position"
                           value={formData.position}
                           onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                           placeholder="Job Posting Link"
                         />
                       </div>
                       <div>
+                        <Label htmlFor="linkedinUrl">LinkedIn Profile</Label>
                         <Input
+                          id="linkedinUrl"
                           value={formData.linkedinUrl}
                           onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
                           placeholder="LinkedIn profile URL"
@@ -181,8 +189,9 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="mb-4">
+                      <Label htmlFor="relationship">Relationship</Label>
                       <Select value={formData.relationship} onValueChange={(value) => setFormData({ ...formData, relationship: value })}>
-                        <SelectTrigger>
+                        <SelectTrigger id="relationship">
                           <SelectValue placeholder="Select your relationship" />
                         </SelectTrigger>
                         <SelectContent>
