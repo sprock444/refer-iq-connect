@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Eye, Mail, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import EmailTemplate from './EmailTemplate';
@@ -25,7 +25,6 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
   const { toast } = useToast();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-  // Sample AI insights data for demonstration
   const sampleAIInsights = {
     roleFit: 92,
     culturalFit: 87,
@@ -34,7 +33,6 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
   };
 
   const handleCopyHTML = () => {
-    // In a real implementation, this would generate the actual HTML string
     const htmlContent = `<!-- Email HTML would be generated here -->`;
     navigator.clipboard.writeText(htmlContent);
     toast({
@@ -75,6 +73,9 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
               <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Email Preview</DialogTitle>
+                  <DialogDescription>
+                    Preview of the referral email that will be sent to the hiring manager.
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="mt-4">
                   <EmailTemplate
@@ -104,7 +105,6 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
             </Button>
           </div>
 
-          {/* Email Summary */}
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <h4 className="font-medium text-gray-900 mb-2">Email Summary</h4>
             <div className="text-sm text-gray-600 space-y-1">

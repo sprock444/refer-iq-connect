@@ -45,168 +45,232 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
       backgroundColor: '#ffffff',
       border: '1px solid #e5e7eb'
     }}>
-      {/* Header */}
+      {/* Compact Header */}
       <div style={{
-        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-        padding: '24px',
-        textAlign: 'center' as const
+        background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+        padding: '16px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
       }}>
-        <h1 style={{
-          color: '#ffffff',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          margin: '0 0 8px 0'
+        <div style={{
+          width: '32px',
+          height: '32px',
+          background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
+          borderRadius: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
-          ReferIQ
-        </h1>
-        <p style={{
-          color: '#e0e7ff',
-          fontSize: '14px',
-          margin: '0'
-        }}>
-          Reinventing Employee Referrals
-        </p>
+          <span style={{
+            color: '#ffffff',
+            fontSize: '16px',
+            fontWeight: 'bold'
+          }}>R</span>
+        </div>
+        <div>
+          <h1 style={{
+            color: '#ffffff',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            margin: '0'
+          }}>ReferIQ</h1>
+          <p style={{
+            color: '#dbeafe',
+            fontSize: '12px',
+            margin: '0'
+          }}>New Referral Ready for Review</p>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div style={{ padding: '24px' }}>
-        <p style={{
-          fontSize: '16px',
-          color: '#374151',
-          margin: '0 0 24px 0'
-        }}>
-          Hi there,
-        </p>
-
-        <p style={{
-          fontSize: '16px',
-          color: '#374151',
-          margin: '0 0 24px 0'
-        }}>
-          Great news! You have a new referral that's ready for review with a compelling video introduction.
-        </p>
-
-        {/* Candidate Card */}
+      <div style={{ padding: '20px 24px' }}>
+        {/* Candidate Header with Video Priority */}
         <div style={{
-          backgroundColor: '#f9fafb',
-          borderRadius: '12px',
-          padding: '24px',
-          marginBottom: '24px',
-          border: '1px solid #e5e7eb'
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '16px',
+          marginBottom: '20px'
         }}>
-          {/* Candidate Header */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '16px'
-          }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              backgroundColor: '#6366f1',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '16px'
-            }}>
-              <span style={{
-                color: '#ffffff',
-                fontSize: '18px',
-                fontWeight: 'bold'
-              }}>
-                {candidateName.split(' ').map(n => n[0]).join('').toUpperCase()}
-              </span>
-            </div>
-            <div>
-              <h2 style={{
-                fontSize: '20px',
-                fontWeight: 'bold',
-                color: '#111827',
-                margin: '0 0 4px 0'
-              }}>
-                {candidateName}
-              </h2>
-              <p style={{
-                fontSize: '14px',
-                color: '#6b7280',
-                margin: '0'
-              }}>
-                {position}
-              </p>
-              <p style={{
-                fontSize: '12px',
-                color: '#8b5cf6',
-                margin: '4px 0 0 0'
-              }}>
-                Referred by: {referrerName} ({relationship})
-              </p>
-            </div>
-          </div>
-
-          {/* Video Section */}
-          {videoFile && (
-            <div style={{
-              backgroundColor: '#1f2937',
-              borderRadius: '8px',
-              padding: '40px',
-              textAlign: 'center' as const,
-              marginBottom: '24px',
-              position: 'relative' as const
-            }}>
+          {/* Video Section - Priority Placement */}
+          <div style={{ flex: '0 0 200px' }}>
+            {videoFile && (
               <div style={{
-                width: '60px',
-                height: '60px',
-                borderRadius: '50%',
-                backgroundColor: '#ffffff',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                backgroundColor: '#1f2937',
+                borderRadius: '8px',
+                padding: '20px',
+                textAlign: 'center' as const,
+                position: 'relative' as const,
                 cursor: 'pointer'
               }}>
-                <Play style={{ color: '#6366f1', width: '24px', height: '24px' }} />
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  backgroundColor: '#ffffff',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '8px'
+                }}>
+                  <Play style={{ color: '#2563eb', width: '20px', height: '20px' }} />
+                </div>
+                <p style={{
+                  color: '#ffffff',
+                  fontSize: '11px',
+                  margin: '0',
+                  fontWeight: 'bold'
+                }}>
+                  Watch Endorsement
+                </p>
+                <p style={{
+                  position: 'absolute' as const,
+                  bottom: '8px',
+                  right: '8px',
+                  color: '#ffffff',
+                  fontSize: '10px',
+                  margin: '0'
+                }}>
+                  1:23
+                </p>
               </div>
-              <p style={{
-                position: 'absolute' as const,
-                bottom: '12px',
-                left: '12px',
-                color: '#ffffff',
-                fontSize: '12px',
-                margin: '0'
-              }}>
-                1:23
-              </p>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Endorsement Quote */}
-          {endorsementText && (
+          {/* Candidate Info */}
+          <div style={{ flex: '1' }}>
             <div style={{
-              borderLeft: '4px solid #e5e7eb',
-              paddingLeft: '16px',
-              marginBottom: '24px'
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '12px'
             }}>
-              <p style={{
-                fontSize: '14px',
-                color: '#4b5563',
-                fontStyle: 'italic',
-                margin: '0 0 8px 0'
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#2563eb',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '12px'
               }}>
-                "{endorsementText}"
-              </p>
+                <span style={{
+                  color: '#ffffff',
+                  fontSize: '16px',
+                  fontWeight: 'bold'
+                }}>
+                  {candidateName.split(' ').map(n => n[0]).join('').toUpperCase()}
+                </span>
+              </div>
+              <div>
+                <h2 style={{
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  color: '#111827',
+                  margin: '0 0 2px 0'
+                }}>
+                  {candidateName}
+                </h2>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#6b7280',
+                  margin: '0 0 2px 0'
+                }}>
+                  {position}
+                </p>
+                <p style={{
+                  fontSize: '11px',
+                  color: '#2563eb',
+                  margin: '0'
+                }}>
+                  Referred by: {referrerName}
+                </p>
+              </div>
             </div>
-          )}
 
-          {/* AI Insights Scores */}
+            {/* Quick Links */}
+            <div style={{
+              display: 'flex',
+              gap: '8px',
+              marginBottom: '12px'
+            }}>
+              {resumeFile && (
+                <a href="#resume-download" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  backgroundColor: '#dc2626',
+                  color: '#ffffff',
+                  padding: '6px 10px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  textDecoration: 'none',
+                  fontWeight: '500'
+                }}>
+                  <FileText style={{ width: '12px', height: '12px', marginRight: '4px' }} />
+                  Resume
+                </a>
+              )}
+              {linkedinUrl && (
+                <a href={linkedinUrl} style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  backgroundColor: '#0077b5',
+                  color: '#ffffff',
+                  padding: '6px 10px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  textDecoration: 'none',
+                  fontWeight: '500'
+                }}>
+                  <Linkedin style={{ width: '12px', height: '12px', marginRight: '4px' }} />
+                  LinkedIn
+                </a>
+              )}
+              {portfolioUrl && (
+                <a href={portfolioUrl} style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  backgroundColor: '#059669',
+                  color: '#ffffff',
+                  padding: '6px 10px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  textDecoration: 'none',
+                  fontWeight: '500'
+                }}>
+                  <ExternalLink style={{ width: '12px', height: '12px', marginRight: '4px' }} />
+                  Portfolio
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* AI Insights Scores - Compact */}
+        <div style={{
+          backgroundColor: '#f8fafc',
+          borderRadius: '8px',
+          padding: '16px',
+          marginBottom: '16px',
+          border: '1px solid #e2e8f0'
+        }}>
+          <h3 style={{
+            fontSize: '13px',
+            fontWeight: 'bold',
+            color: '#1e293b',
+            margin: '0 0 12px 0',
+            textAlign: 'center' as const
+          }}>
+            AI Analysis Results
+          </h3>
           <div style={{
             display: 'flex',
             justifyContent: 'space-around',
-            marginBottom: '24px',
             textAlign: 'center' as const
           }}>
             <div>
               <div style={{
-                fontSize: '32px',
+                fontSize: '24px',
                 fontWeight: 'bold',
                 color: '#059669',
                 margin: '0'
@@ -214,8 +278,8 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                 {aiInsights.roleFit}
               </div>
               <div style={{
-                fontSize: '12px',
-                color: '#6b7280',
+                fontSize: '10px',
+                color: '#64748b',
                 textTransform: 'uppercase' as const,
                 letterSpacing: '0.5px'
               }}>
@@ -224,7 +288,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             </div>
             <div>
               <div style={{
-                fontSize: '32px',
+                fontSize: '24px',
                 fontWeight: 'bold',
                 color: '#059669',
                 margin: '0'
@@ -232,8 +296,8 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                 {aiInsights.culturalFit}
               </div>
               <div style={{
-                fontSize: '12px',
-                color: '#6b7280',
+                fontSize: '10px',
+                color: '#64748b',
                 textTransform: 'uppercase' as const,
                 letterSpacing: '0.5px'
               }}>
@@ -242,7 +306,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             </div>
             <div>
               <div style={{
-                fontSize: '32px',
+                fontSize: '24px',
                 fontWeight: 'bold',
                 color: '#059669',
                 margin: '0'
@@ -250,8 +314,8 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                 {aiInsights.authenticity}
               </div>
               <div style={{
-                fontSize: '12px',
-                color: '#6b7280',
+                fontSize: '10px',
+                color: '#64748b',
                 textTransform: 'uppercase' as const,
                 letterSpacing: '0.5px'
               }}>
@@ -259,199 +323,86 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Attachments */}
+        {/* Endorsement Quote */}
+        {endorsementText && (
           <div style={{
-            display: 'flex',
-            gap: '12px',
-            marginBottom: '24px',
-            flexWrap: 'wrap' as const
-          }}>
-            {linkedinUrl && (
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                backgroundColor: '#0077b5',
-                color: '#ffffff',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                fontSize: '12px',
-                textDecoration: 'none'
-              }}>
-                <Linkedin style={{ width: '14px', height: '14px', marginRight: '6px' }} />
-                LinkedIn Profile
-              </div>
-            )}
-            {resumeFile && (
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                backgroundColor: '#dc2626',
-                color: '#ffffff',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                fontSize: '12px'
-              }}>
-                <FileText style={{ width: '14px', height: '14px', marginRight: '6px' }} />
-                Resume (PDF)
-              </div>
-            )}
-            {portfolioUrl && (
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                backgroundColor: '#059669',
-                color: '#ffffff',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                fontSize: '12px'
-              }}>
-                <ExternalLink style={{ width: '14px', height: '14px', marginRight: '6px' }} />
-                Portfolio Site
-              </div>
-            )}
-          </div>
-
-          {/* Skills/Tags */}
-          <div style={{
-            display: 'flex',
-            gap: '8px',
+            borderLeft: '3px solid #2563eb',
+            paddingLeft: '12px',
             marginBottom: '16px',
-            flexWrap: 'wrap' as const
-          }}>
-            {['Technical Depth', 'Team Player', 'Creative Problem Solver', 'Mentorship'].map((skill) => (
-              <span key={skill} style={{
-                backgroundColor: '#e0e7ff',
-                color: '#3730a3',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                fontSize: '11px'
-              }}>
-                {skill}
-              </span>
-            ))}
-          </div>
-
-          {/* Referrer Quote */}
-          <div style={{
-            borderLeft: '4px solid #f59e0b',
-            paddingLeft: '16px',
-            backgroundColor: '#fffbeb',
-            padding: '16px',
-            borderRadius: '4px',
-            marginBottom: '16px'
+            backgroundColor: '#eff6ff',
+            padding: '12px',
+            borderRadius: '4px'
           }}>
             <p style={{
-              fontSize: '14px',
-              color: '#92400e',
+              fontSize: '13px',
+              color: '#1e40af',
               fontStyle: 'italic',
-              margin: '0 0 8px 0'
+              margin: '0 0 6px 0',
+              lineHeight: '1.4'
             }}>
-              "{candidateName} is one of the most talented developers I've worked with. They consistently deliver high-quality code while mentoring junior developers. Perfect cultural fit for our collaborative environment."
+              "{endorsementText}"
             </p>
             <p style={{
-              fontSize: '12px',
-              color: '#92400e',
+              fontSize: '11px',
+              color: '#1e40af',
               margin: '0',
               fontWeight: 'bold'
             }}>
-              — {referrerName}, Senior Engineering Manager
+              — {referrerName}
             </p>
           </div>
-        </div>
-
-        {/* AI Insights */}
-        <div style={{
-          backgroundColor: '#f0f9ff',
-          padding: '16px',
-          borderRadius: '8px',
-          marginBottom: '24px',
-          border: '1px solid #bae6fd'
-        }}>
-          <h3 style={{
-            fontSize: '14px',
-            fontWeight: 'bold',
-            color: '#0c4a6e',
-            margin: '0 0 8px 0'
-          }}>
-            AI Insights:
-          </h3>
-          <p style={{
-            fontSize: '14px',
-            color: '#0c4a6e',
-            margin: '0',
-            lineHeight: '1.5'
-          }}>
-            {aiInsights.summary}
-          </p>
-        </div>
+        )}
 
         {/* Action Buttons */}
         <div style={{
           display: 'flex',
           gap: '12px',
-          marginBottom: '24px'
+          marginBottom: '16px'
         }}>
           <a href="#" style={{
-            backgroundColor: '#6366f1',
+            backgroundColor: '#2563eb',
             color: '#ffffff',
-            padding: '12px 24px',
+            padding: '10px 20px',
             borderRadius: '6px',
             textDecoration: 'none',
             fontWeight: 'bold',
-            fontSize: '14px'
+            fontSize: '13px',
+            flex: '1',
+            textAlign: 'center' as const
           }}>
             Review Full Profile
           </a>
           <a href="#" style={{
             backgroundColor: '#ffffff',
-            color: '#6366f1',
-            padding: '12px 24px',
+            color: '#2563eb',
+            padding: '10px 20px',
             borderRadius: '6px',
             textDecoration: 'none',
             fontWeight: 'bold',
-            fontSize: '14px',
-            border: '2px solid #6366f1'
+            fontSize: '13px',
+            border: '2px solid #2563eb',
+            flex: '1',
+            textAlign: 'center' as const
           }}>
             Schedule Interview
           </a>
         </div>
 
-        {/* Quick Actions */}
-        <div style={{ marginBottom: '24px' }}>
-          <h4 style={{
-            fontSize: '14px',
-            fontWeight: 'bold',
-            color: '#111827',
-            margin: '0 0 12px 0'
-          }}>
-            Quick Actions:
-          </h4>
-          <ul style={{
-            fontSize: '14px',
-            color: '#6366f1',
-            margin: '0',
-            paddingLeft: '20px'
-          }}>
-            <li><a href="#" style={{ color: '#6366f1' }}>Move to Interview Pool</a></li>
-            <li><a href="#" style={{ color: '#6366f1' }}>Send to Hiring Manager</a></li>
-            <li><a href="#" style={{ color: '#6366f1' }}>Request Technical Assessment</a></li>
-            <li><a href="#" style={{ color: '#6366f1' }}>Share with Team</a></li>
-          </ul>
-        </div>
-
         {/* Footer */}
         <div style={{
           borderTop: '1px solid #e5e7eb',
-          paddingTop: '16px',
-          fontSize: '12px',
-          color: '#6b7280'
+          paddingTop: '12px',
+          fontSize: '11px',
+          color: '#6b7280',
+          textAlign: 'center' as const
         }}>
           <p style={{ margin: '0 0 4px 0' }}>
             This referral expires in 7 days if no action is taken.
           </p>
           <p style={{ margin: '0' }}>
-            Need help? <a href="#" style={{ color: '#6366f1' }}>Contact Support</a> | <a href="#" style={{ color: '#6366f1' }}>View in Dashboard</a>
+            <a href="#" style={{ color: '#2563eb' }}>Contact Support</a> | <a href="#" style={{ color: '#2563eb' }}>View in Dashboard</a>
           </p>
         </div>
       </div>
