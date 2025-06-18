@@ -262,9 +262,6 @@ const Index = () => {
                           rows={3}
                         />
                       </div>
-
-                      {/* Email Preview Component */}
-                      <EmailPreview formData={formData} />
                       
                       <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
                         <Send className="w-4 h-4 mr-2" />
