@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Play, Users, TrendingUp, Award, Video, FileText, Send, Upload } from "lucide-react";
+import { Play, Users, TrendingUp, Award, Video, FileText, Send, Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { EmailPreview } from "@/components/email";
@@ -66,6 +65,14 @@ const Index = () => {
   }, [rotationCount]);
 
   const handleFileUpload = (file: File, type: 'resume' | 'video') => {
+    if (type === 'resume') {
+      setFormData({ ...formData, resumeFile: file });
+    } else {
+      setFormData({ ...formData, videoFile: file });
+    }
+  };
+
+  const handleCameraCapture = (file: File, type: 'resume' | 'video') => {
     if (type === 'resume') {
       setFormData({ ...formData, resumeFile: file });
     } else {
@@ -228,23 +235,24 @@ const Index = () => {
                       </Select>
                     </div>
                     
-                    {/* Resume Upload */}
+                    {/* Resume Camera Capture */}
                     <div className="mb-4">
                       <Label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
-                        Resume Upload
+                        Resume Photo
                       </Label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                         <input
                           type="file"
                           id="resume"
-                          accept=".pdf,.doc,.docx"
-                          onChange={(e) => e.target.files && handleFileUpload(e.target.files[0], 'resume')}
+                          accept="image/*"
+                          capture="environment"
+                          onChange={(e) => e.target.files && handleCameraCapture(e.target.files[0], 'resume')}
                           className="hidden"
                         />
                         <label htmlFor="resume" className="cursor-pointer">
-                          <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                          <Camera className="w-6 h-6 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600">
-                            {formData.resumeFile ? formData.resumeFile.name : "Click to upload resume (PDF, DOC, DOCX)"}
+                            {formData.resumeFile ? formData.resumeFile.name : "Tap to capture resume photo"}
                           </p>
                         </label>
                       </div>
@@ -261,16 +269,16 @@ const Index = () => {
                           id="video"
                           accept="video/*"
                           capture="user"
-                          onChange={(e) => e.target.files && handleFileUpload(e.target.files[0], 'video')}
+                          onChange={(e) => e.target.files && handleCameraCapture(e.target.files[0], 'video')}
                           className="hidden"
                         />
                         <label htmlFor="video" className="cursor-pointer">
                           <Video className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600 mb-1">
-                            {formData.videoFile ? formData.videoFile.name : "Record Video Endorsement"}
+                            {formData.videoFile ? formData.videoFile.name : "Tap to record video endorsement"}
                           </p>
                           <p className="text-xs text-gray-500">
-                            Tap to use camera or select existing video
+                            Use camera to record endorsement
                           </p>
                         </label>
                       </div>
