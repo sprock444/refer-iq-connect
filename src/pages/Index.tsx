@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Play, Users, TrendingUp, Award, Video, FileText, Send, Camera } from "lucide-react";
+import { Play, Users, TrendingUp, Award, Video, FileText, Send, Camera, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { EmailPreview } from "@/components/email";
 import { useReferrals } from "@/hooks/useReferrals";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -20,8 +21,9 @@ const Index = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [showCamera, setShowCamera] = useState<'resume' | 'video' | null>(null);
+  const [showCamera, setShowCamera] = useState<'video' | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [isUploadingResume, setIsUploadingResume] = useState(false);
   
   const [formData, setFormData] = useState({
     referrerName: "",
@@ -71,15 +73,13 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [rotationCount]);
 
-  const startCamera = async (type: 'resume' | 'video') => {
+  const startCamera = async () => {
     try {
-      const constraints = type === 'resume' 
-        ? { video: { facingMode: 'environment' } } // Back camera for resume
-        : { video: true, audio: true }; // Front camera with audio for video
+      const constraints = { video: true, audio: true }; // Front camera with audio for video
       
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
-      setShowCamera(type);
+      setShowCamera('video');
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
@@ -94,24 +94,42 @@ const Index = () => {
     }
   };
 
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
+  const handleResumeFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingResume(true);
+    
+    try {
+      // Upload file to Supabase storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `resumes/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('resume')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Update form data with the uploaded file and its path
+      setFormData({ ...formData, resumeFile: file });
       
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      const ctx = canvas.getContext('2d');
-      ctx?.drawImage(video, 0, 0);
-      
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const file = new File([blob], 'resume-photo.jpg', { type: 'image/jpeg' });
-          setFormData({ ...formData, resumeFile: file });
-          stopCamera();
-        }
-      }, 'image/jpeg', 0.8);
+      toast({
+        title: "Resume uploaded successfully!",
+        description: "Your resume has been uploaded and is ready to submit.",
+      });
+    } catch (error) {
+      console.error('Error uploading resume:', error);
+      toast({
+        title: "Upload Error",
+        description: "Failed to upload resume. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploadingResume(false);
     }
   };
 
@@ -159,6 +177,15 @@ const Index = () => {
     e.preventDefault();
     
     try {
+      let resumeFilePath = undefined;
+      
+      // If resume file exists, get its path from storage
+      if (formData.resumeFile) {
+        const fileExt = formData.resumeFile.name.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        resumeFilePath = `resumes/${fileName}`;
+      }
+
       await createReferral({
         referrerName: formData.referrerName,
         referrerEmail: formData.referrerEmail,
@@ -168,7 +195,7 @@ const Index = () => {
         relationship: formData.relationship as 'friend' | 'former-colleague' | 'family' | 'classmate' | 'other',
         linkedinUrl: formData.linkedinUrl || undefined,
         endorsementText: formData.endorsement || undefined,
-        resumeFilePath: formData.resumeFile?.name || undefined,
+        resumeFilePath: resumeFilePath,
         videoFilePath: formData.videoFile?.name || undefined,
       });
 
@@ -196,9 +223,7 @@ const Index = () => {
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="text-center mb-4">
-              <h3 className="text-lg font-semibold">
-                {showCamera === 'resume' ? 'Capture Resume Photo' : 'Record Video Endorsement'}
-              </h3>
+              <h3 className="text-lg font-semibold">Record Video Endorsement</h3>
             </div>
             
             <div className="relative">
@@ -206,40 +231,25 @@ const Index = () => {
                 ref={videoRef}
                 autoPlay
                 playsInline
-                muted={showCamera === 'resume'}
                 className="w-full rounded-lg"
               />
               <canvas ref={canvasRef} className="hidden" />
             </div>
             
             <div className="flex justify-center space-x-4 mt-4">
-              {showCamera === 'resume' ? (
-                <>
-                  <Button onClick={capturePhoto} className="bg-blue-600 hover:bg-blue-700">
-                    <Camera className="w-4 h-4 mr-2" />
-                    Capture Photo
-                  </Button>
-                  <Button onClick={stopCamera} variant="outline">
-                    Cancel
-                  </Button>
-                </>
+              {!isRecording ? (
+                <Button onClick={startVideoRecording} className="bg-red-600 hover:bg-red-700">
+                  <Video className="w-4 h-4 mr-2" />
+                  Start Recording
+                </Button>
               ) : (
-                <>
-                  {!isRecording ? (
-                    <Button onClick={startVideoRecording} className="bg-red-600 hover:bg-red-700">
-                      <Video className="w-4 h-4 mr-2" />
-                      Start Recording
-                    </Button>
-                  ) : (
-                    <Button onClick={stopVideoRecording} className="bg-gray-600 hover:bg-gray-700">
-                      Stop Recording
-                    </Button>
-                  )}
-                  <Button onClick={stopCamera} variant="outline">
-                    Cancel
-                  </Button>
-                </>
+                <Button onClick={stopVideoRecording} className="bg-gray-600 hover:bg-gray-700">
+                  Stop Recording
+                </Button>
               )}
+              <Button onClick={stopCamera} variant="outline">
+                Cancel
+              </Button>
             </div>
           </div>
         </div>
@@ -361,22 +371,31 @@ const Index = () => {
                       </Select>
                     </div>
                     
-                    {/* Resume Camera Capture */}
+                    {/* Resume File Upload */}
                     <div className="mb-4">
                       <Label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
-                        Resume Photo
+                        Resume Upload
                       </Label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                        <button
-                          type="button"
-                          onClick={() => startCamera('resume')}
-                          className="w-full"
-                        >
-                          <Camera className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                        <input
+                          type="file"
+                          id="resume"
+                          accept=".pdf,.doc,.docx"
+                          onChange={handleResumeFileUpload}
+                          className="hidden"
+                          disabled={isUploadingResume}
+                        />
+                        <label htmlFor="resume" className="cursor-pointer w-full block">
+                          <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600">
-                            {formData.resumeFile ? formData.resumeFile.name : "Tap to capture resume photo"}
+                            {isUploadingResume 
+                              ? "Uploading..." 
+                              : formData.resumeFile 
+                                ? formData.resumeFile.name 
+                                : "Click to upload resume (PDF, DOC, DOCX)"
+                            }
                           </p>
-                        </button>
+                        </label>
                       </div>
                     </div>
                   </div>
@@ -388,7 +407,7 @@ const Index = () => {
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
                         <button
                           type="button"
-                          onClick={() => startCamera('video')}
+                          onClick={startCamera}
                           className="w-full"
                         >
                           <Video className="w-8 h-8 text-gray-400 mx-auto mb-2" />
@@ -415,7 +434,7 @@ const Index = () => {
                       <Button 
                         type="submit" 
                         className="w-full bg-blue-600 hover:bg-blue-700"
-                        disabled={isLoading}
+                        disabled={isLoading || isUploadingResume}
                       >
                         <Send className="w-4 h-4 mr-2" />
                         {isLoading ? "Submitting..." : "Submit Referral"}
