@@ -23,7 +23,6 @@ const Index = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [showCamera, setShowCamera] = useState<'video' | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const [isUploadingResume, setIsUploadingResume] = useState(false);
   
   const [formData, setFormData] = useState({
     referrerName: "",
@@ -75,7 +74,7 @@ const Index = () => {
 
   const startCamera = async () => {
     try {
-      const constraints = { video: true, audio: true }; // Front camera with audio for video
+      const constraints = { video: true, audio: true };
       
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
@@ -94,43 +93,37 @@ const Index = () => {
     }
   };
 
-  const handleResumeFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleResumeFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setIsUploadingResume(true);
-    
-    try {
-      // Upload file to Supabase storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `resumes/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('resume')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      // Update form data with the uploaded file and its path
-      setFormData({ ...formData, resumeFile: file });
-      
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
       toast({
-        title: "Resume uploaded successfully!",
-        description: "Your resume has been uploaded and is ready to submit.",
-      });
-    } catch (error) {
-      console.error('Error uploading resume:', error);
-      toast({
-        title: "Upload Error",
-        description: "Failed to upload resume. Please try again.",
+        title: "Invalid file type",
+        description: "Please upload a PDF, DOC, or DOCX file.",
         variant: "destructive"
       });
-    } finally {
-      setIsUploadingResume(false);
+      return;
     }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload a file smaller than 5MB.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setFormData({ ...formData, resumeFile: file });
+    
+    toast({
+      title: "Resume selected",
+      description: "Resume file is ready to upload with your referral.",
+    });
   };
 
   const startVideoRecording = () => {
@@ -177,15 +170,6 @@ const Index = () => {
     e.preventDefault();
     
     try {
-      let resumeFilePath = undefined;
-      
-      // If resume file exists, get its path from storage
-      if (formData.resumeFile) {
-        const fileExt = formData.resumeFile.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        resumeFilePath = `resumes/${fileName}`;
-      }
-
       await createReferral({
         referrerName: formData.referrerName,
         referrerEmail: formData.referrerEmail,
@@ -195,9 +179,7 @@ const Index = () => {
         relationship: formData.relationship as 'friend' | 'former-colleague' | 'family' | 'classmate' | 'other',
         linkedinUrl: formData.linkedinUrl || undefined,
         endorsementText: formData.endorsement || undefined,
-        resumeFilePath: resumeFilePath,
-        videoFilePath: formData.videoFile?.name || undefined,
-      });
+      }, formData.resumeFile);
 
       setFormData({
         referrerName: "",
@@ -383,16 +365,13 @@ const Index = () => {
                           accept=".pdf,.doc,.docx"
                           onChange={handleResumeFileUpload}
                           className="hidden"
-                          disabled={isUploadingResume}
                         />
                         <label htmlFor="resume" className="cursor-pointer w-full block">
                           <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600">
-                            {isUploadingResume 
-                              ? "Uploading..." 
-                              : formData.resumeFile 
-                                ? formData.resumeFile.name 
-                                : "Click to upload resume (PDF, DOC, DOCX)"
+                            {formData.resumeFile 
+                              ? formData.resumeFile.name 
+                              : "Click to upload resume (PDF, DOC, DOCX)"
                             }
                           </p>
                         </label>
@@ -434,7 +413,7 @@ const Index = () => {
                       <Button 
                         type="submit" 
                         className="w-full bg-blue-600 hover:bg-blue-700"
-                        disabled={isLoading || isUploadingResume}
+                        disabled={isLoading}
                       >
                         <Send className="w-4 h-4 mr-2" />
                         {isLoading ? "Submitting..." : "Submit Referral"}

@@ -24,9 +24,38 @@ export const useReferrals = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const createReferral = async (data: ReferralData) => {
+  const uploadResumeFile = async (file: File): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = fileName;
+
+      const { error: uploadError } = await supabase.storage
+        .from('resume')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
+
+      return filePath;
+    } catch (error) {
+      console.error('Error uploading resume file:', error);
+      throw error;
+    }
+  };
+
+  const createReferral = async (data: ReferralData, resumeFile?: File | null) => {
     setIsLoading(true);
     try {
+      let resumeFilePath = data.resumeFilePath;
+      
+      // If a resume file is provided, upload it first
+      if (resumeFile) {
+        resumeFilePath = await uploadResumeFile(resumeFile);
+      }
+
       const { data: referral, error } = await supabase
         .from('referrals')
         .insert({
@@ -41,7 +70,7 @@ export const useReferrals = () => {
           endorsement_text: data.endorsementText,
           why_fit: data.whyFit,
           culture_alignment: data.cultureAlignment,
-          resume_file_path: data.resumeFilePath,
+          resume_file_path: resumeFilePath,
           video_file_path: data.videoFilePath,
           status: data.status || 'pending'
         })
