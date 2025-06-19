@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,13 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createReferral, isLoading } = useReferrals();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [showCamera, setShowCamera] = useState<'resume' | 'video' | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  
   const [formData, setFormData] = useState({
     referrerName: "",
     referrerEmail: "",
@@ -64,20 +71,88 @@ const Index = () => {
     return () => clearInterval(interval);
   }, [rotationCount]);
 
-  const handleFileUpload = (file: File, type: 'resume' | 'video') => {
-    if (type === 'resume') {
-      setFormData({ ...formData, resumeFile: file });
-    } else {
-      setFormData({ ...formData, videoFile: file });
+  const startCamera = async (type: 'resume' | 'video') => {
+    try {
+      const constraints = type === 'resume' 
+        ? { video: { facingMode: 'environment' } } // Back camera for resume
+        : { video: true, audio: true }; // Front camera with audio for video
+      
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      setStream(mediaStream);
+      setShowCamera(type);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      toast({
+        title: "Camera Error",
+        description: "Unable to access camera. Please check permissions.",
+        variant: "destructive"
+      });
     }
   };
 
-  const handleCameraCapture = (file: File, type: 'resume' | 'video') => {
-    if (type === 'resume') {
-      setFormData({ ...formData, resumeFile: file });
-    } else {
-      setFormData({ ...formData, videoFile: file });
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const video = videoRef.current;
+      
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(video, 0, 0);
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], 'resume-photo.jpg', { type: 'image/jpeg' });
+          setFormData({ ...formData, resumeFile: file });
+          stopCamera();
+        }
+      }, 'image/jpeg', 0.8);
     }
+  };
+
+  const startVideoRecording = () => {
+    if (stream) {
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks: BlobPart[] = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const file = new File([blob], 'video-endorsement.webm', { type: 'video/webm' });
+        setFormData({ ...formData, videoFile: file });
+        stopCamera();
+      };
+      
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start();
+      setIsRecording(true);
+    }
+  };
+
+  const stopVideoRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+    setShowCamera(null);
+    setIsRecording(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,12 +168,10 @@ const Index = () => {
         relationship: formData.relationship as 'friend' | 'former-colleague' | 'family' | 'classmate' | 'other',
         linkedinUrl: formData.linkedinUrl || undefined,
         endorsementText: formData.endorsement || undefined,
-        // Note: File handling would need additional implementation for actual file uploads
         resumeFilePath: formData.resumeFile?.name || undefined,
         videoFilePath: formData.videoFile?.name || undefined,
       });
 
-      // Reset form on success
       setFormData({
         referrerName: "",
         referrerEmail: "",
@@ -112,13 +185,66 @@ const Index = () => {
         endorsement: ""
       });
     } catch (error) {
-      // Error handling is done in the useReferrals hook
       console.error('Error submitting referral:', error);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Camera Modal */}
+      {showCamera && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-semibold">
+                {showCamera === 'resume' ? 'Capture Resume Photo' : 'Record Video Endorsement'}
+              </h3>
+            </div>
+            
+            <div className="relative">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted={showCamera === 'resume'}
+                className="w-full rounded-lg"
+              />
+              <canvas ref={canvasRef} className="hidden" />
+            </div>
+            
+            <div className="flex justify-center space-x-4 mt-4">
+              {showCamera === 'resume' ? (
+                <>
+                  <Button onClick={capturePhoto} className="bg-blue-600 hover:bg-blue-700">
+                    <Camera className="w-4 h-4 mr-2" />
+                    Capture Photo
+                  </Button>
+                  <Button onClick={stopCamera} variant="outline">
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {!isRecording ? (
+                    <Button onClick={startVideoRecording} className="bg-red-600 hover:bg-red-700">
+                      <Video className="w-4 h-4 mr-2" />
+                      Start Recording
+                    </Button>
+                  ) : (
+                    <Button onClick={stopVideoRecording} className="bg-gray-600 hover:bg-gray-700">
+                      Stop Recording
+                    </Button>
+                  )}
+                  <Button onClick={stopCamera} variant="outline">
+                    Cancel
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -241,20 +367,16 @@ const Index = () => {
                         Resume Photo
                       </Label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                        <input
-                          type="file"
-                          id="resume"
-                          accept="image/*"
-                          capture="environment"
-                          onChange={(e) => e.target.files && handleCameraCapture(e.target.files[0], 'resume')}
-                          className="hidden"
-                        />
-                        <label htmlFor="resume" className="cursor-pointer">
+                        <button
+                          type="button"
+                          onClick={() => startCamera('resume')}
+                          className="w-full"
+                        >
                           <Camera className="w-6 h-6 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600">
                             {formData.resumeFile ? formData.resumeFile.name : "Tap to capture resume photo"}
                           </p>
-                        </label>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -264,15 +386,11 @@ const Index = () => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Video Endorsement</h3>
                     <div className="space-y-4">
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
-                        <input
-                          type="file"
-                          id="video"
-                          accept="video/*"
-                          capture="user"
-                          onChange={(e) => e.target.files && handleCameraCapture(e.target.files[0], 'video')}
-                          className="hidden"
-                        />
-                        <label htmlFor="video" className="cursor-pointer">
+                        <button
+                          type="button"
+                          onClick={() => startCamera('video')}
+                          className="w-full"
+                        >
                           <Video className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600 mb-1">
                             {formData.videoFile ? formData.videoFile.name : "Tap to record video endorsement"}
@@ -280,7 +398,7 @@ const Index = () => {
                           <p className="text-xs text-gray-500">
                             Use camera to record endorsement
                           </p>
-                        </label>
+                        </button>
                       </div>
                       
                       <div>
