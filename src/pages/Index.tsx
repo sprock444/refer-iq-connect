@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +11,12 @@ import { Play, Users, TrendingUp, Award, Video, FileText, Send, Upload } from "l
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { EmailPreview } from "@/components/email";
+import { useReferrals } from "@/hooks/useReferrals";
 
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { createReferral, isLoading } = useReferrals();
   const [formData, setFormData] = useState({
     referrerName: "",
     referrerEmail: "",
@@ -70,25 +73,41 @@ const Index = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Referral Submitted!",
-      description: "Your referral has been processed and will be reviewed by our AI system.",
-    });
-    // Reset form
-    setFormData({
-      referrerName: "",
-      referrerEmail: "",
-      candidateName: "",
-      candidateEmail: "",
-      relationship: "",
-      position: "",
-      linkedinUrl: "",
-      resumeFile: null,
-      videoFile: null,
-      endorsement: ""
-    });
+    
+    try {
+      await createReferral({
+        referrerName: formData.referrerName,
+        referrerEmail: formData.referrerEmail,
+        candidateName: formData.candidateName,
+        candidateEmail: formData.candidateEmail,
+        position: formData.position,
+        relationship: formData.relationship as 'friend' | 'former-colleague' | 'family' | 'classmate' | 'other',
+        linkedinUrl: formData.linkedinUrl || undefined,
+        endorsementText: formData.endorsement || undefined,
+        // Note: File handling would need additional implementation for actual file uploads
+        resumeFilePath: formData.resumeFile?.name || undefined,
+        videoFilePath: formData.videoFile?.name || undefined,
+      });
+
+      // Reset form on success
+      setFormData({
+        referrerName: "",
+        referrerEmail: "",
+        candidateName: "",
+        candidateEmail: "",
+        relationship: "",
+        position: "",
+        linkedinUrl: "",
+        resumeFile: null,
+        videoFile: null,
+        endorsement: ""
+      });
+    } catch (error) {
+      // Error handling is done in the useReferrals hook
+      console.error('Error submitting referral:', error);
+    }
   };
 
   return (
@@ -105,7 +124,6 @@ const Index = () => {
             </div>
             <nav className="flex items-center space-x-6">
               <Button variant="ghost" onClick={() => navigate('/dashboard')}>Dashboard</Button>
-              <Button onClick={() => navigate('/refer')}>Make a Referral</Button>
             </nav>
           </div>
         </div>
@@ -132,6 +150,7 @@ const Index = () => {
                         value={formData.referrerName}
                         onChange={(e) => setFormData({ ...formData, referrerName: e.target.value })}
                         placeholder="Input field"
+                        required
                       />
                     </div>
                     <div>
@@ -142,6 +161,7 @@ const Index = () => {
                         value={formData.referrerEmail}
                         onChange={(e) => setFormData({ ...formData, referrerEmail: e.target.value })}
                         placeholder="Input field"
+                        required
                       />
                     </div>
                   </div>
@@ -157,6 +177,7 @@ const Index = () => {
                           value={formData.candidateName}
                           onChange={(e) => setFormData({ ...formData, candidateName: e.target.value })}
                           placeholder="Candidate's full name"
+                          required
                         />
                       </div>
                       <div>
@@ -166,6 +187,7 @@ const Index = () => {
                           value={formData.candidateEmail}
                           onChange={(e) => setFormData({ ...formData, candidateEmail: e.target.value })}
                           placeholder="candidate@email.com"
+                          required
                         />
                       </div>
                     </div>
@@ -177,6 +199,7 @@ const Index = () => {
                           value={formData.position}
                           onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                           placeholder="Job Posting Link"
+                          required
                         />
                       </div>
                       <div>
@@ -191,7 +214,7 @@ const Index = () => {
                     </div>
                     <div className="mb-4">
                       <Label htmlFor="relationship">Relationship</Label>
-                      <Select value={formData.relationship} onValueChange={(value) => setFormData({ ...formData, relationship: value })}>
+                      <Select value={formData.relationship} onValueChange={(value) => setFormData({ ...formData, relationship: value })} required>
                         <SelectTrigger id="relationship">
                           <SelectValue placeholder="Select your relationship" />
                         </SelectTrigger>
@@ -263,9 +286,13 @@ const Index = () => {
                         />
                       </div>
                       
-                      <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                      <Button 
+                        type="submit" 
+                        className="w-full bg-blue-600 hover:bg-blue-700"
+                        disabled={isLoading}
+                      >
                         <Send className="w-4 h-4 mr-2" />
-                        Submit Via Email
+                        {isLoading ? "Submitting..." : "Submit Referral"}
                       </Button>
                     </div>
                   </div>
