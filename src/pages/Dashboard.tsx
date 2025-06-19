@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,60 +7,33 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Video, User, TrendingUp, Award, Search, Filter, ArrowLeft, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useReferrals } from "@/hooks/useReferrals";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { getReferrals, isLoading } = useReferrals();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [referrals, setReferrals] = useState<any[]>([]);
 
-  // Mock data for referrals
-  const referrals = [
-    {
-      id: 1,
-      candidateName: "Sarah Johnson",
-      position: "Senior Software Engineer",
-      referrerName: "Mike Chen",
-      relationship: "Former Colleague",
-      status: "Under Review",
-      aiScore: 92,
-      sentimentScore: 88,
-      cultureFit: 85,
-      date: "2024-01-15",
-      hasVideo: true
-    },
-    {
-      id: 2,
-      candidateName: "David Rodriguez",
-      position: "Product Manager",
-      referrerName: "Lisa Wang",
-      relationship: "Friend",
-      status: "Interview Scheduled",
-      aiScore: 87,
-      sentimentScore: 91,
-      cultureFit: 82,
-      date: "2024-01-12",
-      hasVideo: true
-    },
-    {
-      id: 3,
-      candidateName: "Emily Thompson",
-      position: "UX Designer",
-      referrerName: "James Miller",
-      relationship: "Former Colleague",
-      status: "Pending Review",
-      aiScore: 89,
-      sentimentScore: 85,
-      cultureFit: 90,
-      date: "2024-01-10",
-      hasVideo: true
-    }
-  ];
+  useEffect(() => {
+    const loadReferrals = async () => {
+      try {
+        const data = await getReferrals();
+        setReferrals(data || []);
+      } catch (error) {
+        console.error('Failed to load referrals:', error);
+      }
+    };
+
+    loadReferrals();
+  }, []);
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Under Review": return "bg-yellow-100 text-yellow-800";
-      case "Interview Scheduled": return "bg-green-100 text-green-800";
-      case "Pending Review": return "bg-blue-100 text-blue-800";
+    switch (status?.toLowerCase()) {
+      case "under review": return "bg-yellow-100 text-yellow-800";
+      case "interview scheduled": return "bg-green-100 text-green-800";
+      case "pending": return "bg-blue-100 text-blue-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
@@ -71,9 +44,12 @@ const Dashboard = () => {
     return "text-red-600";
   };
 
+  // Generate mock AI scores for display (since we don't have AI analysis yet)
+  const getMockAIScore = () => Math.floor(Math.random() * 20) + 80;
+
   const filteredReferrals = referrals.filter(referral => {
-    const matchesSearch = referral.candidateName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         referral.position.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = referral.candidate_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         referral.position?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterStatus === "all" || referral.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
@@ -111,8 +87,10 @@ const Dashboard = () => {
               <User className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">24</div>
-              <p className="text-xs text-muted-foreground">+3 from last month</p>
+              <div className="text-2xl font-bold">{referrals.length}</div>
+              <p className="text-xs text-muted-foreground">
+                {referrals.length > 0 ? "Active referrals" : "No referrals yet"}
+              </p>
             </CardContent>
           </Card>
 
@@ -173,77 +151,89 @@ const Dashboard = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="Pending Review">Pending Review</SelectItem>
-                  <SelectItem value="Under Review">Under Review</SelectItem>
-                  <SelectItem value="Interview Scheduled">Interview Scheduled</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="under review">Under Review</SelectItem>
+                  <SelectItem value="interview scheduled">Interview Scheduled</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardContent>
         </Card>
 
+        {/* Loading State */}
+        {isLoading && (
+          <Card>
+            <CardContent className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-500">Loading referrals...</p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Referrals List */}
-        <div className="space-y-4">
-          {filteredReferrals.map((referral) => (
-            <Card key={referral.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold">{referral.candidateName}</h3>
-                      <Badge className={getStatusColor(referral.status)}>
-                        {referral.status}
-                      </Badge>
-                      {referral.hasVideo && (
-                        <Badge variant="outline" className="flex items-center gap-1">
-                          <Video className="w-3 h-3" />
-                          Video
+        {!isLoading && (
+          <div className="space-y-4">
+            {filteredReferrals.map((referral) => (
+              <Card key={referral.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-semibold">{referral.candidate_name}</h3>
+                        <Badge className={getStatusColor(referral.status)}>
+                          {referral.status || 'Pending'}
                         </Badge>
-                      )}
+                        {referral.video_file_path && (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <Video className="w-3 h-3" />
+                            Video
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-gray-600 mb-1">{referral.position}</p>
+                      <p className="text-sm text-gray-500">
+                        Referred by {referral.referrer_name} • {referral.relationship} • {new Date(referral.created_at).toLocaleDateString()}
+                      </p>
                     </div>
-                    <p className="text-gray-600 mb-1">{referral.position}</p>
-                    <p className="text-sm text-gray-500">
-                      Referred by {referral.referrerName} • {referral.relationship} • {referral.date}
-                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 lg:items-center">
+                      <div className="grid grid-cols-3 gap-3 text-center">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">AI Score</p>
+                          <p className={`font-semibold ${getScoreColor(getMockAIScore())}`}>
+                            {getMockAIScore()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Sentiment</p>
+                          <p className={`font-semibold ${getScoreColor(getMockAIScore())}`}>
+                            {getMockAIScore()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Culture Fit</p>
+                          <p className={`font-semibold ${getScoreColor(getMockAIScore())}`}>
+                            {getMockAIScore()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm">
+                          <Play className="w-4 h-4 mr-1" />
+                          View
+                        </Button>
+                        <Button size="sm">Review</Button>
+                      </div>
+                    </div>
                   </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
-                  <div className="flex flex-col sm:flex-row gap-4 lg:items-center">
-                    <div className="grid grid-cols-3 gap-3 text-center">
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">AI Score</p>
-                        <p className={`font-semibold ${getScoreColor(referral.aiScore)}`}>
-                          {referral.aiScore}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Sentiment</p>
-                        <p className={`font-semibold ${getScoreColor(referral.sentimentScore)}`}>
-                          {referral.sentimentScore}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Culture Fit</p>
-                        <p className={`font-semibold ${getScoreColor(referral.cultureFit)}`}>
-                          {referral.cultureFit}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <Play className="w-4 h-4 mr-1" />
-                        View
-                      </Button>
-                      <Button size="sm">Review</Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {filteredReferrals.length === 0 && (
+        {!isLoading && filteredReferrals.length === 0 && (
           <Card>
             <CardContent className="text-center py-12">
               <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />

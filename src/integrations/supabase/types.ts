@@ -9,7 +9,69 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      referrals: {
+        Row: {
+          ai_insights: Json | null
+          candidate_email: string
+          candidate_name: string
+          created_at: string | null
+          culture_alignment: string | null
+          endorsement_text: string | null
+          id: string
+          linkedin_url: string | null
+          portfolio_url: string | null
+          position: string
+          referrer_email: string
+          referrer_name: string
+          relationship: Database["public"]["Enums"]["relationship_type"]
+          resume_file_path: string | null
+          status: string | null
+          updated_at: string | null
+          video_file_path: string | null
+          why_fit: string | null
+        }
+        Insert: {
+          ai_insights?: Json | null
+          candidate_email: string
+          candidate_name: string
+          created_at?: string | null
+          culture_alignment?: string | null
+          endorsement_text?: string | null
+          id?: string
+          linkedin_url?: string | null
+          portfolio_url?: string | null
+          position: string
+          referrer_email: string
+          referrer_name: string
+          relationship: Database["public"]["Enums"]["relationship_type"]
+          resume_file_path?: string | null
+          status?: string | null
+          updated_at?: string | null
+          video_file_path?: string | null
+          why_fit?: string | null
+        }
+        Update: {
+          ai_insights?: Json | null
+          candidate_email?: string
+          candidate_name?: string
+          created_at?: string | null
+          culture_alignment?: string | null
+          endorsement_text?: string | null
+          id?: string
+          linkedin_url?: string | null
+          portfolio_url?: string | null
+          position?: string
+          referrer_email?: string
+          referrer_name?: string
+          relationship?: Database["public"]["Enums"]["relationship_type"]
+          resume_file_path?: string | null
+          status?: string | null
+          updated_at?: string | null
+          video_file_path?: string | null
+          why_fit?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +80,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      relationship_type:
+        | "friend"
+        | "former-colleague"
+        | "family"
+        | "classmate"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +200,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      relationship_type: [
+        "friend",
+        "former-colleague",
+        "family",
+        "classmate",
+        "other",
+      ],
+    },
   },
 } as const

@@ -1,0 +1,100 @@
+
+import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+
+export interface ReferralData {
+  referrerName: string;
+  referrerEmail: string;
+  candidateName: string;
+  candidateEmail: string;
+  position: string;
+  relationship: 'friend' | 'former-colleague' | 'family' | 'classmate' | 'other';
+  linkedinUrl?: string;
+  portfolioUrl?: string;
+  endorsementText?: string;
+  whyFit?: string;
+  cultureAlignment?: string;
+  resumeFilePath?: string;
+  videoFilePath?: string;
+  status?: string;
+}
+
+export const useReferrals = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const createReferral = async (data: ReferralData) => {
+    setIsLoading(true);
+    try {
+      const { data: referral, error } = await supabase
+        .from('referrals')
+        .insert({
+          referrer_name: data.referrerName,
+          referrer_email: data.referrerEmail,
+          candidate_name: data.candidateName,
+          candidate_email: data.candidateEmail,
+          position: data.position,
+          relationship: data.relationship,
+          linkedin_url: data.linkedinUrl,
+          portfolio_url: data.portfolioUrl,
+          endorsement_text: data.endorsementText,
+          why_fit: data.whyFit,
+          culture_alignment: data.cultureAlignment,
+          resume_file_path: data.resumeFilePath,
+          video_file_path: data.videoFilePath,
+          status: data.status || 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Referral submitted successfully!",
+        description: "Thank you for your referral. We'll review it shortly.",
+      });
+
+      return referral;
+    } catch (error) {
+      console.error('Error creating referral:', error);
+      toast({
+        title: "Error submitting referral",
+        description: "There was a problem submitting your referral. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getReferrals = async () => {
+    setIsLoading(true);
+    try {
+      const { data: referrals, error } = await supabase
+        .from('referrals')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return referrals;
+    } catch (error) {
+      console.error('Error fetching referrals:', error);
+      toast({
+        title: "Error loading referrals",
+        description: "There was a problem loading the referrals.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    createReferral,
+    getReferrals,
+    isLoading
+  };
+};
