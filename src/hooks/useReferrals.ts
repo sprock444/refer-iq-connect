@@ -46,14 +46,42 @@ export const useReferrals = () => {
     }
   };
 
-  const createReferral = async (data: ReferralData, resumeFile?: File | null) => {
+  const uploadVideoFile = async (file: File): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = fileName;
+
+      const { error: uploadError } = await supabase.storage
+        .from('video')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('Video upload error:', uploadError);
+        throw uploadError;
+      }
+
+      return filePath;
+    } catch (error) {
+      console.error('Error uploading video file:', error);
+      throw error;
+    }
+  };
+
+  const createReferral = async (data: ReferralData, resumeFile?: File | null, videoFile?: File | null) => {
     setIsLoading(true);
     try {
       let resumeFilePath = data.resumeFilePath;
+      let videoFilePath = data.videoFilePath;
       
       // If a resume file is provided, upload it first
       if (resumeFile) {
         resumeFilePath = await uploadResumeFile(resumeFile);
+      }
+
+      // If a video file is provided, upload it first
+      if (videoFile) {
+        videoFilePath = await uploadVideoFile(videoFile);
       }
 
       const { data: referral, error } = await supabase
@@ -71,7 +99,7 @@ export const useReferrals = () => {
           why_fit: data.whyFit,
           culture_alignment: data.cultureAlignment,
           resume_file_path: resumeFilePath,
-          video_file_path: data.videoFilePath,
+          video_file_path: videoFilePath,
           status: data.status || 'pending'
         })
         .select()

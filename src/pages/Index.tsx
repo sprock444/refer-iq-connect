@@ -142,6 +142,11 @@ const Index = () => {
         const file = new File([blob], 'video-endorsement.webm', { type: 'video/webm' });
         setFormData({ ...formData, videoFile: file });
         stopCamera();
+        
+        toast({
+          title: "Video recorded",
+          description: "Video endorsement is ready to upload with your referral.",
+        });
       };
       
       mediaRecorderRef.current = mediaRecorder;
@@ -179,7 +184,7 @@ const Index = () => {
         relationship: formData.relationship as 'friend' | 'former-colleague' | 'family' | 'classmate' | 'other',
         linkedinUrl: formData.linkedinUrl || undefined,
         endorsementText: formData.endorsement || undefined,
-      }, formData.resumeFile);
+      }, formData.resumeFile, formData.videoFile);
 
       setFormData({
         referrerName: "",
