@@ -50,14 +50,37 @@ const EmailTemplatePage = () => {
           <p className="text-gray-600 mt-2">Test and customize your referral email template</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Controls Panel */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Template Controls</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+        <div className="space-y-6">
+          {/* Email Preview - Full Width */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Live Preview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="border rounded-lg overflow-hidden">
+                <EmailTemplate
+                  referrerName={formData.referrerName}
+                  candidateName={formData.candidateName}
+                  position={formData.position}
+                  relationship={formData.relationship}
+                  videoFile={hasVideo ? new File([], 'video.mp4') : null}
+                  resumeFile={hasResume ? new File([], 'resume.pdf') : null}
+                  linkedinUrl={formData.linkedinUrl}
+                  portfolioUrl={formData.portfolioUrl}
+                  endorsementText={formData.endorsement}
+                  aiInsights={sampleAIInsights}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Controls Panel - Bottom */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Template Controls</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="referrerName">Referrer Name</Label>
                   <Input
@@ -102,18 +125,8 @@ const EmailTemplatePage = () => {
                     onChange={(e) => handleInputChange('portfolioUrl', e.target.value)}
                   />
                 </div>
-                
-                <div>
-                  <Label htmlFor="endorsement">Endorsement Text</Label>
-                  <Textarea
-                    id="endorsement"
-                    value={formData.endorsement}
-                    onChange={(e) => handleInputChange('endorsement', e.target.value)}
-                    rows={4}
-                  />
-                </div>
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-end">
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
@@ -136,34 +149,19 @@ const EmailTemplatePage = () => {
                     <Label htmlFor="hasResume">Include Resume</Label>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
 
-          {/* Email Preview */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle>Live Preview</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="border rounded-lg overflow-hidden">
-                  <EmailTemplate
-                    referrerName={formData.referrerName}
-                    candidateName={formData.candidateName}
-                    position={formData.position}
-                    relationship={formData.relationship}
-                    videoFile={hasVideo ? new File([], 'video.mp4') : null}
-                    resumeFile={hasResume ? new File([], 'resume.pdf') : null}
-                    linkedinUrl={formData.linkedinUrl}
-                    portfolioUrl={formData.portfolioUrl}
-                    endorsementText={formData.endorsement}
-                    aiInsights={sampleAIInsights}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              <div className="col-span-full">
+                <Label htmlFor="endorsement">Endorsement Text</Label>
+                <Textarea
+                  id="endorsement"
+                  value={formData.endorsement}
+                  onChange={(e) => handleInputChange('endorsement', e.target.value)}
+                  rows={4}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
