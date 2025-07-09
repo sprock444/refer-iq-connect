@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Play, ExternalLink, FileText, Linkedin, User, Video } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EmailTemplateProps {
   referrerName: string;
@@ -37,6 +38,13 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
     summary: "Candidate demonstrates exceptional technical communication and genuine enthusiasm. Video analysis shows strong confidence indicators and natural speech patterns. Responses align perfectly with company values around innovation and collaboration."
   }
 }) => {
+  // Get the video URL from Supabase storage
+  const getVideoUrl = () => {
+    const { data } = supabase.storage
+      .from('video')
+      .getPublicUrl('1752085045699-yhlxnt6j7xh.webm');
+    return data.publicUrl;
+  };
   return (
     <div style={{
       fontFamily: 'Arial, sans-serif',
@@ -82,58 +90,45 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
       {/* Main Content */}
       <div style={{ padding: '20px 24px' }}>
         {/* Video Section - Top Priority */}
-        {videoFile && (
-          <div style={{
-            backgroundColor: '#1f2937',
-            borderRadius: '8px',
-            padding: '24px',
-            textAlign: 'center' as const,
-            marginBottom: '20px',
-            position: 'relative' as const,
-            cursor: 'pointer'
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '8px',
+          padding: '16px',
+          marginBottom: '20px',
+          position: 'relative' as const
+        }}>
+          <h3 style={{
+            color: '#ffffff',
+            fontSize: '16px',
+            margin: '0 0 12px 0',
+            fontWeight: 'bold',
+            textAlign: 'center' as const
           }}>
-            <div style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              backgroundColor: '#ffffff',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '12px'
-            }}>
-              <Play style={{ color: '#2563eb', width: '24px', height: '24px' }} />
-            </div>
-            <h3 style={{
-              color: '#ffffff',
-              fontSize: '16px',
-              margin: '0 0 4px 0',
-              fontWeight: 'bold'
-            }}>
-              Personal Endorsement Video
-            </h3>
-            <p style={{
-              color: '#d1d5db',
-              fontSize: '12px',
-              margin: '0'
-            }}>
-              Click to watch {referrerName}'s endorsement for {candidateName}
-            </p>
-            <p style={{
-              position: 'absolute' as const,
-              bottom: '12px',
-              right: '12px',
-              color: '#ffffff',
-              fontSize: '11px',
-              margin: '0',
-              backgroundColor: 'rgba(0,0,0,0.3)',
-              padding: '2px 6px',
-              borderRadius: '3px'
-            }}>
-              1:23
-            </p>
-          </div>
-        )}
+            Personal Endorsement Video
+          </h3>
+          <video 
+            controls
+            style={{
+              width: '100%',
+              maxWidth: '480px',
+              height: 'auto',
+              borderRadius: '6px',
+              display: 'block',
+              margin: '0 auto'
+            }}
+          >
+            <source src={getVideoUrl()} type="video/webm" />
+            Your browser does not support the video tag.
+          </video>
+          <p style={{
+            color: '#d1d5db',
+            fontSize: '12px',
+            margin: '8px 0 0 0',
+            textAlign: 'center' as const
+          }}>
+            {referrerName}'s endorsement for {candidateName}
+          </p>
+        </div>
 
         {/* Candidate Header */}
         <div style={{
