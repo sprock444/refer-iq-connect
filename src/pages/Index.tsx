@@ -261,7 +261,7 @@ const Index = () => {
 
       {/* Main Content - Two Column Layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-16 xl:gap-20">
           {/* Left Column - Referral Form */}
           <div className="space-y-6">
             <div>
