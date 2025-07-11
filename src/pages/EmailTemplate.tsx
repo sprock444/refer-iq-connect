@@ -53,11 +53,37 @@ const EmailTemplatePage = () => {
         <div className="space-y-6">
           {/* Email Preview - Full Width */}
           <Card>
-            <CardHeader>
-              <CardTitle>Live Preview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="border rounded-lg overflow-hidden">
+            <CardContent className="p-0">
+              <div className="border rounded-lg overflow-hidden bg-white">
+                {/* Email Header Interface */}
+                <div className="bg-gray-50 border-b px-4 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <span>From:</span>
+                      <span className="font-medium">{formData.referrerName} &lt;{formData.referrerName.toLowerCase().replace(' ', '.')}@company.com&gt;</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {new Date().toLocaleDateString('en-US', { 
+                        weekday: 'short', 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                    <span>To:</span>
+                    <span>hiring@company.com</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="text-gray-600">Subject:</span>
+                    <span className="font-semibold text-gray-900">You Have a Referral from {formData.referrerName}</span>
+                  </div>
+                </div>
+
+                {/* Email Body */}
                 <EmailTemplate
                   referrerName={formData.referrerName}
                   candidateName={formData.candidateName}
