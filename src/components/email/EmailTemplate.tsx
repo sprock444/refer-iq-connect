@@ -188,7 +188,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           flexWrap: 'wrap' as const
         }}>
           {resumeFile && (
-            <a href="#resume-download" style={{
+            <a href="/resume" style={{
               display: 'inline-flex',
               alignItems: 'center',
               backgroundColor: '#dc2626',
