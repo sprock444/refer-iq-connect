@@ -183,21 +183,23 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         {/* Quick Action Links */}
         <div style={{
           display: 'flex',
-          gap: '8px',
+          gap: '12px',
           marginBottom: '16px',
-          flexWrap: 'wrap' as const
+          width: '100%'
         }}>
           {resumeFile && (
             <a href="/resume" style={{
               display: 'inline-flex',
               alignItems: 'center',
+              justifyContent: 'center',
               backgroundColor: '#dc2626',
               color: '#ffffff',
               padding: '8px 12px',
               borderRadius: '6px',
               fontSize: '12px',
               textDecoration: 'none',
-              fontWeight: '600'
+              fontWeight: '600',
+              flex: '1'
             }}>
               <FileText style={{ width: '14px', height: '14px', marginRight: '6px' }} />
               Download Resume
@@ -207,13 +209,15 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             <a href={linkedinUrl} style={{
               display: 'inline-flex',
               alignItems: 'center',
+              justifyContent: 'center',
               backgroundColor: '#0077b5',
               color: '#ffffff',
               padding: '8px 12px',
               borderRadius: '6px',
               fontSize: '12px',
               textDecoration: 'none',
-              fontWeight: '600'
+              fontWeight: '600',
+              flex: '1'
             }}>
               <Linkedin style={{ width: '14px', height: '14px', marginRight: '6px' }} />
               LinkedIn Profile
@@ -223,13 +227,15 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             <a href={portfolioUrl} style={{
               display: 'inline-flex',
               alignItems: 'center',
+              justifyContent: 'center',
               backgroundColor: '#059669',
               color: '#ffffff',
               padding: '8px 12px',
               borderRadius: '6px',
               fontSize: '12px',
               textDecoration: 'none',
-              fontWeight: '600'
+              fontWeight: '600',
+              flex: '1'
             }}>
               <ExternalLink style={{ width: '14px', height: '14px', marginRight: '6px' }} />
               Portfolio
