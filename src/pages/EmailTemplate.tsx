@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 const EmailTemplatePage = () => {
   const [formData, setFormData] = useState({
-    referrerName: 'John Smith',
+    referrerName: 'Jason Sprawka',
     candidateName: 'Alex Chen',
     position: 'Senior Frontend Developer',
     relationship: 'former-colleague',
