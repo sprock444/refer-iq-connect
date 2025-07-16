@@ -42,7 +42,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
   const getVideoUrl = () => {
     const { data } = supabase.storage
       .from('video')
-      .getPublicUrl('1752085045699-yhlxnt6j7xh.webm');
+      .getPublicUrl('1752669755179-6f0hc0vzked.webm');
     return data.publicUrl;
   };
   return (
