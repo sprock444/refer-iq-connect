@@ -17,7 +17,10 @@ const EmailTemplatePage = () => {
     relationship: 'former-colleague',
     linkedinUrl: 'https://linkedin.com/in/alexchen',
     portfolioUrl: 'https://alexchen.dev',
-    endorsement: "I'm excited about this opportunity because I've been following your company's innovation in React frameworks, and I believe Alex's experience building scalable component libraries would be a perfect fit. Their problem-solving skills and collaborative approach make them an ideal team member."
+    endorsement: "I'm excited about this opportunity because I've been following your company's innovation in React frameworks, and I believe Alex's experience building scalable component libraries would be a perfect fit. Their problem-solving skills and collaborative approach make them an ideal team member.",
+    recipientFirstName: 'Sarah',
+    recipientLastName: 'Johnson',
+    recipientEmail: 'sarah.johnson@company.com'
   });
 
   const [hasVideo, setHasVideo] = useState(true);
@@ -75,7 +78,7 @@ const EmailTemplatePage = () => {
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
                     <span>To:</span>
-                    <span>hiring@company.com</span>
+                    <span className="font-medium">{formData.recipientFirstName} {formData.recipientLastName} &lt;{formData.recipientEmail}&gt;</span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm">
                     <span className="text-gray-600">Subject:</span>
@@ -106,15 +109,58 @@ const EmailTemplatePage = () => {
               <CardTitle>Template Controls</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="referrerName">Referrer Name</Label>
-                  <Input
-                    id="referrerName"
-                    value={formData.referrerName}
-                    onChange={(e) => handleInputChange('referrerName', e.target.value)}
-                  />
+              {/* From Section */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">From (Referrer)</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <Label htmlFor="referrerName">Referrer Name</Label>
+                    <Input
+                      id="referrerName"
+                      value={formData.referrerName}
+                      onChange={(e) => handleInputChange('referrerName', e.target.value)}
+                    />
+                  </div>
                 </div>
+              </div>
+
+              {/* To Section */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">To (Recipient)</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="recipientFirstName">First Name</Label>
+                    <Input
+                      id="recipientFirstName"
+                      value={formData.recipientFirstName}
+                      onChange={(e) => handleInputChange('recipientFirstName', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="recipientLastName">Last Name</Label>
+                    <Input
+                      id="recipientLastName"
+                      value={formData.recipientLastName}
+                      onChange={(e) => handleInputChange('recipientLastName', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="recipientEmail">Email</Label>
+                    <Input
+                      id="recipientEmail"
+                      value={formData.recipientEmail}
+                      onChange={(e) => handleInputChange('recipientEmail', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Candidate Information */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Candidate Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 
                 <div>
                   <Label htmlFor="candidateName">Candidate Name</Label>
@@ -175,9 +221,11 @@ const EmailTemplatePage = () => {
                     <Label htmlFor="hasResume">Include Resume</Label>
                   </div>
                 </div>
+                </div>
               </div>
 
-              <div className="col-span-full">
+              {/* Endorsement */}
+              <div>
                 <Label htmlFor="endorsement">Endorsement Text</Label>
                 <Textarea
                   id="endorsement"
