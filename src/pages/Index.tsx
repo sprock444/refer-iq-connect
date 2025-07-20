@@ -27,6 +27,9 @@ const Index = () => {
   const [formData, setFormData] = useState({
     referrerName: "",
     referrerEmail: "",
+    recipientFirstName: "",
+    recipientLastName: "",
+    recipientEmail: "",
     candidateName: "",
     candidateEmail: "",
     relationship: "",
@@ -189,6 +192,9 @@ const Index = () => {
       setFormData({
         referrerName: "",
         referrerEmail: "",
+        recipientFirstName: "",
+        recipientLastName: "",
+        recipientEmail: "",
         candidateName: "",
         candidateEmail: "",
         relationship: "",
@@ -293,6 +299,44 @@ const Index = () => {
                         placeholder="Input field"
                         required
                       />
+                    </div>
+                  </div>
+
+                  {/* Recipient Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Send To</h3>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <Label htmlFor="recipientFirstName">First Name</Label>
+                        <Input
+                          id="recipientFirstName"
+                          value={formData.recipientFirstName}
+                          onChange={(e) => setFormData({ ...formData, recipientFirstName: e.target.value })}
+                          placeholder="First name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="recipientLastName">Last Name</Label>
+                        <Input
+                          id="recipientLastName"
+                          value={formData.recipientLastName}
+                          onChange={(e) => setFormData({ ...formData, recipientLastName: e.target.value })}
+                          placeholder="Last name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="recipientEmail">Email</Label>
+                        <Input
+                          id="recipientEmail"
+                          type="email"
+                          value={formData.recipientEmail}
+                          onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
+                          placeholder="recipient@company.com"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
 
