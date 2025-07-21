@@ -553,7 +553,7 @@ export const generateEmailHTML = (props: {
             <div style="margin-bottom: 24px; text-align: center;">
                 <h3 style="color: #111827; font-size: 18px; font-weight: 600; margin: 0 0 16px 0;">📹 Introduction Video</h3>
                 <a href="https://referiq.netlify.app/referral/${referralId}" style="display: inline-block; text-decoration: none;">
-                    <div style="position: relative; width: 100%; max-width: 480px; height: 270px; border-radius: 6px; overflow: hidden; background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&h=300&fit=crop&crop=face'); background-size: cover; background-position: center; margin: 0 auto;">
+                    <div style="position: relative; width: 100%; max-width: 480px; height: 270px; border-radius: 6px; overflow: hidden; background-image: url('https://tvmmppyvqiqfgefsoamb.supabase.co/storage/v1/object/public/email-assets/video-thumbnail.jpg'); background-size: cover; background-position: center; margin: 0 auto;">
                         <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.3);"></div>
                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background-color: rgba(37, 99, 235, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                             <div style="width: 0; height: 0; border-left: 16px solid #ffffff; border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 4px;"></div>
