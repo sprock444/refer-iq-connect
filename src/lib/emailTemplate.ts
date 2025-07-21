@@ -26,7 +26,7 @@ export function generateEmailHTML(data: EmailTemplateData): string {
   } = data;
 
   const landingPageUrl = `https://referiq.netlify.app/referral/${referralId}`;
-  const videoThumbnailUrl = videoFile ? `https://tvmmppyvqiqfgefsoamb.supabase.co/storage/v1/object/public/email-assets/video-thumbnail.jpg` : null;
+  const videoThumbnailUrl = videoFile ? `https://referiq.netlify.app/video-thumbnail.jpg` : null;
 
   return `
 <!DOCTYPE html>
