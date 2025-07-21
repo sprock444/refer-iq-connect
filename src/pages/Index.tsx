@@ -181,6 +181,9 @@ const Index = () => {
       await createReferral({
         referrerName: formData.referrerName,
         referrerEmail: formData.referrerEmail,
+        recipientFirstName: formData.recipientFirstName,
+        recipientLastName: formData.recipientLastName,
+        recipientEmail: formData.recipientEmail,
         candidateName: formData.candidateName,
         candidateEmail: formData.candidateEmail,
         position: formData.position,

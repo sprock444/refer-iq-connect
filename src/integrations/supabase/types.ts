@@ -26,6 +26,9 @@ export type Database = {
           linkedin_url: string | null
           portfolio_url: string | null
           position: string
+          recipient_email: string | null
+          recipient_first_name: string | null
+          recipient_last_name: string | null
           referrer_email: string
           referrer_name: string
           relationship: Database["public"]["Enums"]["relationship_type"]
@@ -46,6 +49,9 @@ export type Database = {
           linkedin_url?: string | null
           portfolio_url?: string | null
           position: string
+          recipient_email?: string | null
+          recipient_first_name?: string | null
+          recipient_last_name?: string | null
           referrer_email: string
           referrer_name: string
           relationship: Database["public"]["Enums"]["relationship_type"]
@@ -66,6 +72,9 @@ export type Database = {
           linkedin_url?: string | null
           portfolio_url?: string | null
           position?: string
+          recipient_email?: string | null
+          recipient_first_name?: string | null
+          recipient_last_name?: string | null
           referrer_email?: string
           referrer_name?: string
           relationship?: Database["public"]["Enums"]["relationship_type"]

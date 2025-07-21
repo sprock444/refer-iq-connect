@@ -6,6 +6,9 @@ import { useToast } from '@/hooks/use-toast';
 export interface ReferralData {
   referrerName: string;
   referrerEmail: string;
+  recipientFirstName: string;
+  recipientLastName: string;
+  recipientEmail: string;
   candidateName: string;
   candidateEmail: string;
   position: string;
@@ -89,6 +92,9 @@ export const useReferrals = () => {
         .insert({
           referrer_name: data.referrerName,
           referrer_email: data.referrerEmail,
+          recipient_first_name: data.recipientFirstName,
+          recipient_last_name: data.recipientLastName,
+          recipient_email: data.recipientEmail,
           candidate_name: data.candidateName,
           candidate_email: data.candidateEmail,
           position: data.position,
