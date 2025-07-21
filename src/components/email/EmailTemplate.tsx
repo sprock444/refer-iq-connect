@@ -497,6 +497,7 @@ export const generateEmailHTML = (props: {
   position: string;
   referralId: string;
   resumeFile?: any;
+  linkedinUrl?: string;
   portfolioUrl?: string;
   endorsementText?: string;
   recipientName?: string;
@@ -507,6 +508,7 @@ export const generateEmailHTML = (props: {
     position,
     referralId,
     resumeFile,
+    linkedinUrl,
     portfolioUrl,
     endorsementText,
     recipientName = 'there'
@@ -599,8 +601,13 @@ export const generateEmailHTML = (props: {
                         📄 View Resume
                     </a>
                     ` : ''}
+                    ${linkedinUrl ? `
+                    <a href="${linkedinUrl}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #0077b5; color: #ffffff; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500;">
+                        💼 LinkedIn Profile
+                    </a>
+                    ` : ''}
                     ${portfolioUrl ? `
-                    <a href="https://referiq.netlify.app/referral/${referralId}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #059669; color: #ffffff; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500;">
+                    <a href="${portfolioUrl}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: #059669; color: #ffffff; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500;">
                         🔗 View Portfolio
                     </a>
                     ` : ''}

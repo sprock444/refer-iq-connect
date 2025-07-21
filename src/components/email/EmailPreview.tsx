@@ -64,7 +64,8 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData, referralId }) => 
         position: formData.position,
         referralId: referralId || '',
         resumeFile: formData.resumeFile,
-        portfolioUrl: formData.linkedinUrl,
+        linkedinUrl: formData.linkedinUrl,
+        portfolioUrl: undefined, // Add separate portfolio field if needed
         endorsementText: formData.endorsement,
         recipientName: `${formData.recipientFirstName} ${formData.recipientLastName}`
       });
