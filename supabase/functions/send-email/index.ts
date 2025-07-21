@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "Referrals <onboarding@resend.dev>",
       to: [finalRecipientEmail],
-      subject: subject,
+      subject: "You have a Referral from Jason Sprawka",
       html: htmlContent,
     });
 

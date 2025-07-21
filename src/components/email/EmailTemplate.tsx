@@ -74,11 +74,22 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <span style={{
-            color: '#ffffff',
-            fontSize: '14px',
-            fontWeight: 'bold'
-          }}>📹</span>
+          <div style={{
+            width: '16px',
+            height: '16px',
+            backgroundColor: '#ffffff',
+            borderRadius: '2px',
+            position: 'relative' as const
+          }}>
+            <div style={{
+              position: 'absolute' as const,
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: '8px',
+              color: '#3b82f6'
+            }}>▶</div>
+          </div>
         </div>
         <div>
           <h1 style={{
@@ -130,7 +141,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               Your browser does not support the video tag.
             </video>
           ) : (
-            <a href={`/referral/${referralId}`} style={{
+            <a href={isLandingPage ? `${window.location.origin}/referral/${referralId}` : `https://tvmmppyvqiqfgefsoamb.supabase.co/storage/v1/object/public/video/1752669755179-6f0hc0vzked.webm`} style={{
               position: 'relative' as const,
               width: '100%',
               maxWidth: '480px',
@@ -139,7 +150,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               borderRadius: '6px',
               overflow: 'hidden',
               cursor: 'pointer',
-              backgroundImage: 'url(https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=500&h=300&fit=crop&crop=face)',
+              backgroundImage: 'url(https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&h=300&fit=crop&crop=face)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               display: 'block',
