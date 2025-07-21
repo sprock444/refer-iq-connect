@@ -2,6 +2,7 @@
 import React from 'react';
 import { Play, ExternalLink, FileText, Linkedin, User, Video } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import videoThumbnail from '@/assets/video-thumbnail.jpg';
 
 interface EmailTemplateProps {
   referrerName: string;
@@ -65,32 +66,14 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         alignItems: 'center',
         gap: '8px'
       }}>
-        <div style={{
-          width: '24px',
-          height: '24px',
-          background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-          borderRadius: '4px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <div style={{
-            width: '16px',
-            height: '16px',
-            backgroundColor: '#ffffff',
-            borderRadius: '2px',
-            position: 'relative' as const
-          }}>
-            <div style={{
-              position: 'absolute' as const,
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '8px',
-              color: '#3b82f6'
-            }}>▶</div>
-          </div>
-        </div>
+        <img 
+          src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzNiODJmNiIvPgo8cGF0aCBkPSJNMTAgOGw2IDQtNiA0VjhaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" 
+          alt="ReferIQ" 
+          style={{
+            width: '24px',
+            height: '24px'
+          }}
+        />
         <div>
           <h1 style={{
             color: '#ffffff',
@@ -141,7 +124,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               Your browser does not support the video tag.
             </video>
           ) : (
-            <a href={isLandingPage ? `${window.location.origin}/referral/${referralId}` : `https://tvmmppyvqiqfgefsoamb.supabase.co/storage/v1/object/public/video/1752669755179-6f0hc0vzked.webm`} style={{
+            <a href={isLandingPage ? `/referral/${referralId}` : `https://referiq.netlify.app/referral/${referralId}`} style={{
               position: 'relative' as const,
               width: '100%',
               maxWidth: '480px',
@@ -150,7 +133,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               borderRadius: '6px',
               overflow: 'hidden',
               cursor: 'pointer',
-              backgroundImage: 'url(https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&h=300&fit=crop&crop=face)',
+              backgroundImage: `url(${isLandingPage ? videoThumbnail : 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&h=300&fit=crop&crop=face'})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               display: 'block',
@@ -288,7 +271,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           flexWrap: 'wrap'
         }}>
           {resumeFile && (
-            <a href={`/referral/${referralId}/resume`} style={{
+            <a href={isLandingPage ? `/referral/${referralId}/resume` : `https://referiq.netlify.app/referral/${referralId}`} style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -458,7 +441,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           gap: '12px',
           marginBottom: '16px'
         }}>
-          <a href="#" style={{
+          <a href={isLandingPage ? `/referral/${referralId}` : `https://referiq.netlify.app/referral/${referralId}`} style={{
             backgroundColor: '#2563eb',
             color: '#ffffff',
             padding: '12px 24px',
@@ -471,7 +454,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           }}>
             Review Full Profile
           </a>
-          <a href="#" style={{
+          <a href={isLandingPage ? `/referral/${referralId}` : `https://referiq.netlify.app/referral/${referralId}`} style={{
             backgroundColor: '#ffffff',
             color: '#2563eb',
             padding: '12px 24px',
