@@ -40,6 +40,8 @@ const Index = () => {
     endorsement: ""
   });
 
+  const [createdReferral, setCreatedReferral] = useState<any>(null);
+
   // Dynamic header text state
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -178,7 +180,7 @@ const Index = () => {
     e.preventDefault();
     
     try {
-      await createReferral({
+      const referral = await createReferral({
         referrerName: formData.referrerName,
         referrerEmail: formData.referrerEmail,
         recipientFirstName: formData.recipientFirstName,
@@ -192,24 +194,32 @@ const Index = () => {
         endorsementText: formData.endorsement || undefined,
       }, formData.resumeFile, formData.videoFile);
 
-      setFormData({
-        referrerName: "",
-        referrerEmail: "",
-        recipientFirstName: "",
-        recipientLastName: "",
-        recipientEmail: "",
-        candidateName: "",
-        candidateEmail: "",
-        relationship: "",
-        position: "",
-        linkedinUrl: "",
-        resumeFile: null,
-        videoFile: null,
-        endorsement: ""
-      });
+      console.log('Referral created:', referral);
+      setCreatedReferral(referral);
+      
+      // Don't reset form data yet - user might want to send email
     } catch (error) {
       console.error('Error submitting referral:', error);
     }
+  };
+
+  const handleStartOver = () => {
+    setCreatedReferral(null);
+    setFormData({
+      referrerName: "",
+      referrerEmail: "",
+      recipientFirstName: "",
+      recipientLastName: "",
+      recipientEmail: "",
+      candidateName: "",
+      candidateEmail: "",
+      relationship: "",
+      position: "",
+      linkedinUrl: "",
+      resumeFile: null,
+      videoFile: null,
+      endorsement: ""
+    });
   };
 
   return (
@@ -277,9 +287,35 @@ const Index = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Start a Referral Now...</h2>
             </div>
             
-            <Card>
-              <CardContent className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
+            {createdReferral ? (
+              // Show success message and email preview
+              <div className="space-y-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <TrendingUp className="w-8 h-8 text-green-600" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">Referral Submitted Successfully!</h3>
+                      <p className="text-gray-600 mb-4">
+                        Your referral has been saved. You can now send an email to the hiring manager.
+                      </p>
+                      <Button onClick={handleStartOver} variant="outline">
+                        Submit Another Referral
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <EmailPreview 
+                  formData={formData} 
+                  referralId={createdReferral.id}
+                />
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="p-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Referrer Information */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -474,9 +510,10 @@ const Index = () => {
                     <Send className="w-4 h-4 mr-2" />
                     {isLoading ? "Submitting..." : "Submit Referral"}
                   </Button>
-                </form>
-              </CardContent>
-            </Card>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Right Column - Marketing Content */}

@@ -20,9 +20,10 @@ interface EmailPreviewProps {
     linkedinUrl: string;
     endorsement: string;
   };
+  referralId?: string;
 }
 
-const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
+const EmailPreview: React.FC<EmailPreviewProps> = ({ formData, referralId }) => {
   const { toast } = useToast();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
@@ -43,15 +44,35 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
   };
 
   const handleSendEmail = async () => {
+    if (!referralId) {
+      toast({
+        title: "Error",
+        description: "Please save the referral first before sending email.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      // Create HTML content from the email template
-      const emailElement = document.createElement('div');
-      emailElement.innerHTML = document.querySelector('[data-email-content]')?.innerHTML || '';
-      const htmlContent = emailElement.outerHTML;
+      // Generate proper HTML content using React render
+      const htmlContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">New Referral: ${formData.candidateName} for ${formData.position}</h2>
+          <p>Hi there,</p>
+          <p>I'd like to refer <strong>${formData.candidateName}</strong> for the <strong>${formData.position}</strong> position.</p>
+          <p><strong>My relationship with the candidate:</strong> ${formData.relationship}</p>
+          <p><strong>Endorsement:</strong></p>
+          <p>${formData.endorsement}</p>
+          ${formData.linkedinUrl ? `<p><strong>LinkedIn:</strong> <a href="${formData.linkedinUrl}">${formData.linkedinUrl}</a></p>` : ''}
+          <p>Best regards,<br>${formData.referrerName}</p>
+        </div>
+      `;
+
+      console.log('Sending email with referralId:', referralId);
 
       const { data, error } = await supabase.functions.invoke('send-email', {
         body: {
-          referralId: 'temp-id', // TODO: Pass actual referral ID
+          referralId: referralId,
           recipientEmail: formData.candidateEmail,
           recipientName: formData.candidateName,
           htmlContent: htmlContent,
@@ -59,7 +80,12 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+
+      console.log('Email sent successfully:', data);
 
       toast({
         title: "Email Sent!",
@@ -126,7 +152,11 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
               Copy HTML
             </Button>
 
-            <Button onClick={handleSendEmail} className="flex items-center gap-2">
+            <Button 
+              onClick={handleSendEmail} 
+              className="flex items-center gap-2"
+              disabled={!referralId}
+            >
               <Mail className="w-4 h-4" />
               Send Email
             </Button>
