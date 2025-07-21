@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Eye, Mail, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import EmailTemplate, { generateEmailHTML } from './EmailTemplate';
+import EmailTemplate from './EmailTemplate';
+import { generateEmailHTML } from '@/lib/emailTemplate';
 import { supabase } from '@/integrations/supabase/client';
 
 interface EmailPreviewProps {
@@ -67,7 +68,8 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData, referralId }) => 
         linkedinUrl: formData.linkedinUrl,
         portfolioUrl: undefined, // Add separate portfolio field if needed
         endorsementText: formData.endorsement,
-        recipientName: `${formData.recipientFirstName} ${formData.recipientLastName}`
+        recipientName: `${formData.recipientFirstName} ${formData.recipientLastName}`,
+        videoFile: formData.videoFile
       });
 
       console.log('Sending email with referralId:', referralId);
