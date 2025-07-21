@@ -32,10 +32,17 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // For testing: override recipient to verified email
+    // Remove this line when domain is verified in production
+    const testEmail = "jason.sprawka@gmail.com";
+    const finalRecipientEmail = testEmail; // Change back to recipientEmail when domain verified
+    
+    console.log(`Sending to: ${finalRecipientEmail} (original: ${recipientEmail})`);
+
     // Send email via Resend
     const emailResponse = await resend.emails.send({
       from: "Referrals <onboarding@resend.dev>",
-      to: [recipientEmail],
+      to: [finalRecipientEmail],
       subject: subject,
       html: htmlContent,
     });
