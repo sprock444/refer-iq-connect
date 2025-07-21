@@ -26,6 +26,8 @@ const handler = async (req: Request): Promise<Response> => {
     const { referralId, recipientEmail, recipientName, htmlContent, subject }: SendEmailRequest = await req.json();
 
     console.log("Sending email for referral:", referralId);
+    console.log("Subject:", subject);
+    console.log("HTML content preview:", htmlContent.substring(0, 500) + "...");
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -43,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "Referrals <onboarding@resend.dev>",
       to: [finalRecipientEmail],
-      subject: "You have a Referral from Jason Sprawka",
+      subject: subject,
       html: htmlContent,
     });
 
