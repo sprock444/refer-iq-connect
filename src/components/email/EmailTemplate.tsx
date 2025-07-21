@@ -133,7 +133,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               borderRadius: '6px',
               overflow: 'hidden',
               cursor: 'pointer',
-              backgroundImage: `url(${isLandingPage ? videoThumbnail : 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&h=300&fit=crop&crop=face'})`,
+              backgroundImage: `url(${isLandingPage ? videoThumbnail : '/video-thumbnail.jpg'})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               display: 'block',
