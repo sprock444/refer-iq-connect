@@ -74,7 +74,10 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <Video style={{ color: '#ffffff', width: '14px', height: '14px' }} />
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23 7l-7 5 7 5V7z" fill="#ffffff"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" fill="#ffffff"/>
+          </svg>
         </div>
         <div>
           <h1 style={{
@@ -126,7 +129,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               Your browser does not support the video tag.
             </video>
           ) : (
-            <div style={{
+            <a href={`/referral/${referralId}`} style={{
               position: 'relative' as const,
               width: '100%',
               maxWidth: '480px',
@@ -135,7 +138,9 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               borderRadius: '6px',
               overflow: 'hidden',
               cursor: 'pointer',
-              background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)'
+              background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)',
+              display: 'block',
+              textDecoration: 'none'
             }}>
               <div style={{
                 position: 'absolute' as const,
@@ -150,7 +155,9 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <Play style={{ color: '#ffffff', width: '24px', height: '24px', marginLeft: '4px' }} />
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="5,3 19,12 5,21" fill="#ffffff"/>
+                </svg>
               </div>
               <div style={{
                 position: 'absolute' as const,
@@ -166,7 +173,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               }}>
                 Click to view {referrerName}'s video endorsement
               </div>
-            </div>
+            </a>
           )}
           <p style={{
             color: '#d1d5db',
@@ -231,12 +238,12 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         {/* Quick Action Links */}
         <div style={{
           display: 'flex',
-          gap: '12px',
+          gap: '8px',
           marginBottom: '16px',
-          width: '100%'
+          flexWrap: 'wrap'
         }}>
           {resumeFile && (
-            <a href="/resume" style={{
+            <a href={`/referral/${referralId}/resume`} style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -247,14 +254,20 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               fontSize: '12px',
               textDecoration: 'none',
               fontWeight: '600',
-              flex: '1'
+              minWidth: '120px'
             }}>
-              <FileText style={{ width: '14px', height: '14px', marginRight: '6px' }} />
-              Download Resume
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '6px' }}>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" fill="none" stroke="currentColor" strokeWidth="2"/>
+                <polyline points="14,2 14,8 20,8" fill="none" stroke="currentColor" strokeWidth="2"/>
+                <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" strokeWidth="2"/>
+                <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" strokeWidth="2"/>
+                <polyline points="10,9 9,9 8,9" stroke="currentColor" strokeWidth="2"/>
+              </svg>
+              Resume
             </a>
           )}
           {linkedinUrl && (
-            <a href={linkedinUrl} style={{
+            <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -265,14 +278,16 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               fontSize: '12px',
               textDecoration: 'none',
               fontWeight: '600',
-              flex: '1'
+              minWidth: '120px'
             }}>
-              <Linkedin style={{ width: '14px', height: '14px', marginRight: '6px' }} />
-              LinkedIn Profile
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '6px' }}>
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
+              </svg>
+              LinkedIn
             </a>
           )}
           {portfolioUrl && (
-            <a href={portfolioUrl} style={{
+            <a href={portfolioUrl} target="_blank" rel="noopener noreferrer" style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -283,9 +298,13 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               fontSize: '12px',
               textDecoration: 'none',
               fontWeight: '600',
-              flex: '1'
+              minWidth: '120px'
             }}>
-              <ExternalLink style={{ width: '14px', height: '14px', marginRight: '6px' }} />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '6px' }}>
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" strokeWidth="2" fill="none"/>
+                <polyline points="15,3 21,3 21,9" stroke="currentColor" strokeWidth="2" fill="none"/>
+                <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" strokeWidth="2"/>
+              </svg>
               Portfolio
             </a>
           )}
