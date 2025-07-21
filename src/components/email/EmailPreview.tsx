@@ -13,6 +13,9 @@ interface EmailPreviewProps {
     referrerName: string;
     candidateName: string;
     candidateEmail: string;
+    recipientFirstName: string;
+    recipientLastName: string;
+    recipientEmail: string;
     position: string;
     relationship: string;
     videoFile: File | null;
@@ -73,8 +76,8 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData, referralId }) => 
       const { data, error } = await supabase.functions.invoke('send-email', {
         body: {
           referralId: referralId,
-          recipientEmail: formData.candidateEmail,
-          recipientName: formData.candidateName,
+          recipientEmail: formData.recipientEmail,
+          recipientName: `${formData.recipientFirstName} ${formData.recipientLastName}`,
           htmlContent: htmlContent,
           subject: `Referral for ${formData.position} - ${formData.candidateName}`
         }
@@ -165,8 +168,8 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData, referralId }) => 
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <h4 className="font-medium text-gray-900 mb-2">Email Summary</h4>
             <div className="text-sm text-gray-600 space-y-1">
-              <p><strong>To:</strong> hiring-manager@company.com</p>
-              <p><strong>Subject:</strong> New Referral: {formData.candidateName || "Candidate Name"} for {formData.position || "Position"}</p>
+              <p><strong>To:</strong> {formData.recipientEmail || "recipient@company.com"}</p>
+              <p><strong>Subject:</strong> Referral for {formData.position || "Position"} - {formData.candidateName || "Candidate Name"}</p>
               <p><strong>Includes:</strong> Video endorsement, AI analysis, resume, LinkedIn profile</p>
             </div>
           </div>
