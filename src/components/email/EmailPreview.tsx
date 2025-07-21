@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Eye, Mail, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import EmailTemplate from './EmailTemplate';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EmailPreviewProps {
   formData: {
@@ -41,11 +42,37 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
     });
   };
 
-  const handleSendEmail = () => {
-    toast({
-      title: "Email Sent!",
-      description: "Referral email has been sent to the hiring manager.",
-    });
+  const handleSendEmail = async () => {
+    try {
+      // Create HTML content from the email template
+      const emailElement = document.createElement('div');
+      emailElement.innerHTML = document.querySelector('[data-email-content]')?.innerHTML || '';
+      const htmlContent = emailElement.outerHTML;
+
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: {
+          referralId: 'temp-id', // TODO: Pass actual referral ID
+          recipientEmail: formData.candidateEmail,
+          recipientName: formData.candidateName,
+          htmlContent: htmlContent,
+          subject: `Referral for ${formData.position} - ${formData.candidateName}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Email Sent!",
+        description: "The referral email has been sent successfully.",
+      });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send email. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -77,7 +104,7 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData }) => {
                     Preview of the referral email that will be sent to the hiring manager.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="mt-4">
+                <div className="mt-4" data-email-content>
                   <EmailTemplate
                     referrerName={formData.referrerName || "John Smith"}
                     candidateName={formData.candidateName || "Alex Chen"}
