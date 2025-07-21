@@ -308,7 +308,7 @@ const Index = () => {
                   {/* Recipient Information */}
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Send To</h3>
-                    <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
                         <Label htmlFor="recipientFirstName">First Name</Label>
                         <Input
@@ -329,17 +329,17 @@ const Index = () => {
                           required
                         />
                       </div>
-                      <div>
-                        <Label htmlFor="recipientEmail">Email</Label>
-                        <Input
-                          id="recipientEmail"
-                          type="email"
-                          value={formData.recipientEmail}
-                          onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
-                          placeholder="recipient@company.com"
-                          required
-                        />
-                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <Label htmlFor="recipientEmail">Email</Label>
+                      <Input
+                        id="recipientEmail"
+                        type="email"
+                        value={formData.recipientEmail}
+                        onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
+                        placeholder="recipient@company.com"
+                        required
+                      />
                     </div>
                   </div>
 
