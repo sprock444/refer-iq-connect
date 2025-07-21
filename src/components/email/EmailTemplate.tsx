@@ -138,10 +138,23 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
               borderRadius: '6px',
               overflow: 'hidden',
               cursor: 'pointer',
-              background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)',
+              backgroundImage: 'url(https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=500&h=300&fit=crop&crop=face)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
               display: 'block',
               textDecoration: 'none'
             }}>
+              {/* Dark overlay for better contrast */}
+              <div style={{
+                position: 'absolute' as const,
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)'
+              }}></div>
+              
+              {/* Play button */}
               <div style={{
                 position: 'absolute' as const,
                 top: '50%',
@@ -153,12 +166,30 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
                 height: '64px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                zIndex: '2'
               }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <polygon points="5,3 19,12 5,21" fill="#ffffff"/>
                 </svg>
               </div>
+              
+              {/* Video duration badge */}
+              <div style={{
+                position: 'absolute' as const,
+                bottom: '12px',
+                right: '12px',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                color: '#ffffff',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '11px',
+                fontWeight: 'bold'
+              }}>
+                2:47
+              </div>
+              
+              {/* Video info overlay */}
               <div style={{
                 position: 'absolute' as const,
                 bottom: '16px',
