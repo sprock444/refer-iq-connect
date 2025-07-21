@@ -8,8 +8,8 @@ interface EmailTemplateProps {
   candidateName: string;
   position: string;
   relationship: string;
-  videoFile?: File | null;
-  resumeFile?: File | null;
+  videoFile?: File | null | { path: string };
+  resumeFile?: File | null | { path: string };
   linkedinUrl?: string;
   portfolioUrl?: string;
   endorsementText?: string;
@@ -19,6 +19,8 @@ interface EmailTemplateProps {
     authenticity: number;
     summary: string;
   };
+  isLandingPage?: boolean;
+  referralId?: string;
 }
 
 const EmailTemplate: React.FC<EmailTemplateProps> = ({
@@ -31,6 +33,8 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
   linkedinUrl,
   portfolioUrl,
   endorsementText,
+  isLandingPage = false,
+  referralId,
   aiInsights = {
     roleFit: 92,
     culturalFit: 87,
@@ -106,20 +110,64 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
           }}>
             Personal Endorsement Video
           </h3>
-          <video 
-            controls
-            style={{
+          {isLandingPage ? (
+            <video 
+              controls
+              style={{
+                width: '100%',
+                maxWidth: '480px',
+                height: 'auto',
+                borderRadius: '6px',
+                display: 'block',
+                margin: '0 auto'
+              }}
+            >
+              <source src={getVideoUrl()} type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <div style={{
+              position: 'relative' as const,
               width: '100%',
               maxWidth: '480px',
-              height: 'auto',
+              height: '270px',
+              margin: '0 auto',
               borderRadius: '6px',
-              display: 'block',
-              margin: '0 auto'
-            }}
-          >
-            <source src={getVideoUrl()} type="video/webm" />
-            Your browser does not support the video tag.
-          </video>
+              overflow: 'hidden',
+              cursor: 'pointer',
+              background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)'
+            }}>
+              <div style={{
+                position: 'absolute' as const,
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'rgba(37, 99, 235, 0.9)',
+                borderRadius: '50%',
+                width: '64px',
+                height: '64px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Play style={{ color: '#ffffff', width: '24px', height: '24px', marginLeft: '4px' }} />
+              </div>
+              <div style={{
+                position: 'absolute' as const,
+                bottom: '16px',
+                left: '16px',
+                right: '16px',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                color: '#ffffff',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                textAlign: 'center' as const
+              }}>
+                Click to view {referrerName}'s video endorsement
+              </div>
+            </div>
+          )}
           <p style={{
             color: '#d1d5db',
             fontSize: '12px',
