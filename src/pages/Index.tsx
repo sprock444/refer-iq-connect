@@ -389,22 +389,39 @@ const Index = () => {
                         />
                       </div>
                     </div>
-                    <div className="mb-4">
-                      <Label htmlFor="relationship">Relationship</Label>
-                      <Select value={formData.relationship} onValueChange={(value) => setFormData({ ...formData, relationship: value })} required>
-                        <SelectTrigger id="relationship">
-                          <SelectValue placeholder="Select your relationship" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="friend">Friend</SelectItem>
-                          <SelectItem value="former-colleague">Former Colleague</SelectItem>
-                          <SelectItem value="family">Family</SelectItem>
-                          <SelectItem value="classmate">Classmate</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
                     
+                    {/* Video Endorsement - Moved up to highlight secret sauce */}
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Video Endorsement</h3>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
+                        <button
+                          type="button"
+                          onClick={startCamera}
+                          className="w-full"
+                        >
+                          <Video className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 mb-1">
+                            {formData.videoFile ? formData.videoFile.name : "Tap to record video endorsement"}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Use camera to record endorsement
+                          </p>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Written Endorsement */}
+                    <div className="mb-4">
+                      <Label htmlFor="endorsement">Written Endorsement (Optional)</Label>
+                      <Textarea
+                        id="endorsement"
+                        value={formData.endorsement}
+                        onChange={(e) => setFormData({ ...formData, endorsement: e.target.value })}
+                        placeholder="Tell us why this candidate would be a great fit..."
+                        rows={3}
+                      />
+                    </div>
+
                     {/* Resume File Upload */}
                     <div className="mb-4">
                       <Label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
@@ -429,49 +446,34 @@ const Index = () => {
                         </label>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Video Endorsement */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Video Endorsement</h3>
-                    <div className="space-y-4">
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
-                        <button
-                          type="button"
-                          onClick={startCamera}
-                          className="w-full"
-                        >
-                          <Video className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-600 mb-1">
-                            {formData.videoFile ? formData.videoFile.name : "Tap to record video endorsement"}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Use camera to record endorsement
-                          </p>
-                        </button>
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="endorsement">Written Endorsement (Optional)</Label>
-                        <Textarea
-                          id="endorsement"
-                          value={formData.endorsement}
-                          onChange={(e) => setFormData({ ...formData, endorsement: e.target.value })}
-                          placeholder="Tell us why this candidate would be a great fit..."
-                          rows={3}
-                        />
-                      </div>
-                      
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-blue-600 hover:bg-blue-700"
-                        disabled={isLoading}
-                      >
-                        <Send className="w-4 h-4 mr-2" />
-                        {isLoading ? "Submitting..." : "Submit Referral"}
-                      </Button>
+                    {/* Relationship */}
+                    <div className="mb-4">
+                      <Label htmlFor="relationship">Relationship</Label>
+                      <Select value={formData.relationship} onValueChange={(value) => setFormData({ ...formData, relationship: value })} required>
+                        <SelectTrigger id="relationship">
+                          <SelectValue placeholder="Select your relationship" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="friend">Friend</SelectItem>
+                          <SelectItem value="former-colleague">Former Colleague</SelectItem>
+                          <SelectItem value="family">Family</SelectItem>
+                          <SelectItem value="classmate">Classmate</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
+
+                  {/* Submit Button */}
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    disabled={isLoading}
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    {isLoading ? "Submitting..." : "Submit Referral"}
+                  </Button>
                 </form>
               </CardContent>
             </Card>
