@@ -525,15 +525,25 @@ export const generateEmailHTML = (props: {
     <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
         
         <!-- Compact Header with ReferIQ branding -->
-        <div style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); padding: 12px 24px; display: flex; align-items: center; gap: 8px;">
-            <div style="width: 24px; height: 24px; background-color: #3b82f6; border-radius: 4px; position: relative;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 8px solid white; border-top: 5px solid transparent; border-bottom: 5px solid transparent; margin-left: 2px;"></div>
-            </div>
-            <div>
-                <h1 style="color: #ffffff; font-size: 16px; font-weight: bold; margin: 0;">ReferIQ</h1>
-                <p style="color: #dbeafe; font-size: 11px; margin: 0;">Video Referral Ready for Review</p>
-            </div>
-        </div>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);">
+            <tr>
+                <td style="padding: 12px 24px;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td style="vertical-align: middle; padding-right: 8px;">
+                                <div style="width: 24px; height: 24px; background-color: #3b82f6; border-radius: 4px; position: relative;">
+                                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 8px solid white; border-top: 5px solid transparent; border-bottom: 5px solid transparent; margin-left: 2px;"></div>
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <h1 style="color: #ffffff; font-size: 16px; font-weight: bold; margin: 0; font-family: Arial, sans-serif;">ReferIQ</h1>
+                                <p style="color: #dbeafe; font-size: 11px; margin: 0; font-family: Arial, sans-serif;">Video Referral Ready for Review</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
         <!-- Main Content -->
         <div style="padding: 32px 24px;">
