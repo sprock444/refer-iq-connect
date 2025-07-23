@@ -524,18 +524,15 @@ export const generateEmailHTML = (props: {
 <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
         
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); color: #ffffff; padding: 24px; text-align: center;">
-            <div style="margin-bottom: 16px;">
-                <div style="display: inline-flex; align-items: center; gap: 8px;">
-                    <div style="width: 24px; height: 24px; background-color: #3b82f6; border-radius: 4px; position: relative;">
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 8px solid white; border-top: 5px solid transparent; border-bottom: 5px solid transparent; margin-left: 2px;"></div>
-                    </div>
-                    <span style="font-size: 20px; font-weight: 700; color: #ffffff;">ReferIQ</span>
-                </div>
+        <!-- Compact Header with ReferIQ branding -->
+        <div style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); padding: 12px 24px; display: flex; align-items: center; gap: 8px;">
+            <div style="width: 24px; height: 24px; background-color: #3b82f6; border-radius: 4px; position: relative;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 8px solid white; border-top: 5px solid transparent; border-bottom: 5px solid transparent; margin-left: 2px;"></div>
             </div>
-            <h2 style="margin: 0; font-size: 24px; font-weight: 600;">You have a referral from ${referrerName}</h2>
-            <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 16px;">A talented candidate for your consideration</p>
+            <div>
+                <h1 style="color: #ffffff; font-size: 16px; font-weight: bold; margin: 0;">ReferIQ</h1>
+                <p style="color: #dbeafe; font-size: 11px; margin: 0;">Video Referral Ready for Review</p>
+            </div>
         </div>
 
         <!-- Main Content -->
