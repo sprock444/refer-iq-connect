@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -85,7 +86,14 @@ const Index = () => {
 
   const startCamera = async () => {
     try {
-      const constraints = { video: true, audio: true };
+      const constraints = { 
+        video: { 
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: 'user'
+        }, 
+        audio: true 
+      };
       
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       setStream(mediaStream);
@@ -93,6 +101,10 @@ const Index = () => {
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        // Wait for video to load metadata
+        videoRef.current.onloadedmetadata = () => {
+          console.log('Video metadata loaded, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
+        };
       }
     } catch (error) {
       console.error('Error accessing camera:', error);
@@ -139,9 +151,11 @@ const Index = () => {
 
   const startVideoRecording = () => {
     if (stream && videoRef.current) {
+      console.log('Starting video recording...');
+      
       // Initialize thumbnail capture
       thumbnailCaptureRef.current = new ThumbnailCapture();
-      thumbnailCaptureRef.current.startCapturing(videoRef.current, 3000); // Capture every 3 seconds
+      thumbnailCaptureRef.current.startCapturing(videoRef.current, 2000); // Capture every 2 seconds
       
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
@@ -153,9 +167,13 @@ const Index = () => {
       };
       
       mediaRecorder.onstop = () => {
+        console.log('Recording stopped, processing...');
+        
         // Stop thumbnail capture
         thumbnailCaptureRef.current?.stopCapturing();
         const thumbnails = thumbnailCaptureRef.current?.getThumbnails() || [];
+        console.log('Captured thumbnails:', thumbnails.length);
+        
         setCapturedThumbnails(thumbnails);
         
         const blob = new Blob(chunks, { type: 'video/webm' });
@@ -165,14 +183,17 @@ const Index = () => {
         // Show thumbnail selection if we have thumbnails
         if (thumbnails.length > 0) {
           setShowCamera('thumbnails');
+          toast({
+            title: "Video recorded",
+            description: "Now select a thumbnail for your video.",
+          });
         } else {
           stopCamera();
+          toast({
+            title: "Video recorded",
+            description: "Video endorsement is ready to upload with your referral.",
+          });
         }
-        
-        toast({
-          title: "Video recorded",
-          description: thumbnails.length > 0 ? "Select a thumbnail for your video." : "Video endorsement is ready to upload with your referral.",
-        });
       };
       
       mediaRecorderRef.current = mediaRecorder;
@@ -183,6 +204,7 @@ const Index = () => {
 
   const stopVideoRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
+      console.log('Stopping video recording...');
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
@@ -191,6 +213,7 @@ const Index = () => {
   const handleThumbnailConfirm = async () => {
     if (selectedThumbnail && thumbnailCaptureRef.current) {
       try {
+        console.log('Uploading thumbnail...');
         const url = await thumbnailCaptureRef.current.uploadThumbnail(selectedThumbnail);
         setThumbnailUrl(url);
         
@@ -276,9 +299,12 @@ const Index = () => {
               <>
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-semibold">Record Video Endorsement</h3>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {isRecording ? 'Recording... Click Stop when finished' : 'Click Start Recording to begin'}
+                  </p>
                 </div>
                 
-                <div className="relative">
+                <div className="relative mb-4">
                   <video
                     ref={videoRef}
                     autoPlay
@@ -288,9 +314,15 @@ const Index = () => {
                     style={{ aspectRatio: '16/9' }}
                   />
                   <canvas ref={canvasRef} className="hidden" />
+                  
+                  {isRecording && (
+                    <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      ● REC
+                    </div>
+                  )}
                 </div>
                 
-                <div className="flex justify-center space-x-4 mt-4">
+                <div className="flex justify-center space-x-4">
                   {!isRecording ? (
                     <Button onClick={startVideoRecording} className="bg-red-600 hover:bg-red-700">
                       <Video className="w-4 h-4 mr-2" />
@@ -310,10 +342,6 @@ const Index = () => {
 
             {showCamera === 'thumbnails' && (
               <>
-                <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold">Select Video Thumbnail</h3>
-                </div>
-                
                 <ThumbnailSelector
                   thumbnails={capturedThumbnails}
                   selectedThumbnail={selectedThumbnail}
