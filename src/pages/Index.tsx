@@ -101,17 +101,27 @@ const Index = () => {
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        videoRef.current.autoplay = true;
+        videoRef.current.playsInline = true;
+        videoRef.current.muted = true;
         
         // Ensure video plays and is visible
-        videoRef.current.onloadedmetadata = async () => {
-          console.log('Video metadata loaded, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
+        const playVideo = async () => {
           try {
             await videoRef.current?.play();
-            console.log('Video is now playing');
+            console.log('Video is now playing, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
           } catch (playError) {
             console.error('Error playing video:', playError);
           }
         };
+        
+        if (videoRef.current.readyState >= 2) {
+          // Video metadata is already loaded
+          playVideo();
+        } else {
+          // Wait for metadata to load
+          videoRef.current.addEventListener('loadedmetadata', playVideo, { once: true });
+        }
       }
     } catch (error) {
       console.error('Error accessing camera:', error);
@@ -160,9 +170,15 @@ const Index = () => {
     if (stream && videoRef.current) {
       console.log('Starting video recording...');
       
-      // Initialize thumbnail capture
-      thumbnailCaptureRef.current = new ThumbnailCapture();
-      thumbnailCaptureRef.current.startCapturing(videoRef.current, 2000); // Capture every 2 seconds
+      // Wait a moment to ensure video is playing properly
+      setTimeout(() => {
+        if (videoRef.current && videoRef.current.videoWidth > 0) {
+          // Initialize thumbnail capture
+          thumbnailCaptureRef.current = new ThumbnailCapture();
+          thumbnailCaptureRef.current.startCapturing(videoRef.current, 3000); // Capture every 3 seconds
+          console.log('Thumbnail capture started');
+        }
+      }, 500);
       
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
@@ -187,7 +203,7 @@ const Index = () => {
         const file = new File([blob], 'video-endorsement.webm', { type: 'video/webm' });
         setFormData({ ...formData, videoFile: file });
         
-        // Show thumbnail selection if we have thumbnails
+        // Always show thumbnail selection if we have thumbnails, otherwise generate one
         if (thumbnails.length > 0) {
           setShowCamera('thumbnails');
           toast({
@@ -195,6 +211,21 @@ const Index = () => {
             description: "Now select a thumbnail for your video.",
           });
         } else {
+          // Generate a single thumbnail if none were captured
+          if (videoRef.current && thumbnailCaptureRef.current) {
+            const singleThumbnail = thumbnailCaptureRef.current.captureSingleFrame(videoRef.current);
+            if (singleThumbnail) {
+              setCapturedThumbnails([singleThumbnail]);
+              setSelectedThumbnail(singleThumbnail);
+              setShowCamera('thumbnails');
+              toast({
+                title: "Video recorded",
+                description: "A thumbnail was generated. You can use it or record again.",
+              });
+              return;
+            }
+          }
+          
           stopCamera();
           toast({
             title: "Video recorded",
@@ -206,6 +237,11 @@ const Index = () => {
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start();
       setIsRecording(true);
+      
+      toast({
+        title: "Recording started",
+        description: "Thumbnails will be captured automatically during recording.",
+      });
     }
   };
 
@@ -317,14 +353,20 @@ const Index = () => {
                     autoPlay
                     playsInline
                     muted
-                    className="w-full rounded-lg bg-gray-900"
-                    style={{ aspectRatio: '16/9' }}
+                    className="w-full rounded-lg bg-gray-900 min-h-[300px]"
+                    style={{ aspectRatio: '16/9', objectFit: 'cover' }}
                   />
                   <canvas ref={canvasRef} className="hidden" />
                   
                   {isRecording && (
-                    <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse">
                       ● REC
+                    </div>
+                  )}
+                  
+                  {!stream && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900 rounded-lg">
+                      <p className="text-white text-sm">Initializing camera...</p>
                     </div>
                   )}
                 </div>

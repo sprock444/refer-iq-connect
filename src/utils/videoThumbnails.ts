@@ -61,6 +61,31 @@ export class ThumbnailCapture {
     return this.thumbnails;
   }
 
+  captureSingleFrame(videoElement: HTMLVideoElement): VideoThumbnail | null {
+    if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
+      return null;
+    }
+
+    // Set canvas dimensions to maintain aspect ratio
+    const aspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+    this.canvas.width = 320;
+    this.canvas.height = 320 / aspectRatio;
+
+    // Draw current video frame to canvas
+    this.context.drawImage(videoElement, 0, 0, this.canvas.width, this.canvas.height);
+
+    // Convert to data URL
+    const dataUrl = this.canvas.toDataURL('image/jpeg', 0.8);
+    
+    const thumbnail: VideoThumbnail = {
+      id: `thumb_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      dataUrl,
+      timestamp: Date.now()
+    };
+
+    return thumbnail;
+  }
+
   async uploadThumbnail(thumbnail: VideoThumbnail): Promise<string | null> {
     try {
       // Convert data URL to blob
