@@ -105,6 +105,9 @@ const Index = () => {
         videoRef.current.playsInline = true;
         videoRef.current.muted = true;
         
+        // Initialize thumbnail capture system
+        thumbnailCaptureRef.current = new ThumbnailCapture();
+        
         // Ensure video plays and is visible
         const playVideo = async () => {
           try {
@@ -167,18 +170,8 @@ const Index = () => {
   };
 
   const startVideoRecording = () => {
-    if (stream && videoRef.current) {
+    if (stream && videoRef.current && thumbnailCaptureRef.current) {
       console.log('Starting video recording...');
-      
-      // Wait a moment to ensure video is playing properly
-      setTimeout(() => {
-        if (videoRef.current && videoRef.current.videoWidth > 0) {
-          // Initialize thumbnail capture
-          thumbnailCaptureRef.current = new ThumbnailCapture();
-          thumbnailCaptureRef.current.startCapturing(videoRef.current, 3000); // Capture every 3 seconds
-          console.log('Thumbnail capture started');
-        }
-      }, 500);
       
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
@@ -233,6 +226,12 @@ const Index = () => {
           });
         }
       };
+      
+      // Start thumbnail capture when recording begins
+      if (videoRef.current.videoWidth > 0) {
+        thumbnailCaptureRef.current.startCapturing(videoRef.current, 3000);
+        console.log('Thumbnail capture started');
+      }
       
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start();
