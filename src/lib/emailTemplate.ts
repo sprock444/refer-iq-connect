@@ -10,6 +10,7 @@ interface EmailTemplateData {
   endorsementText?: string;
   recipientName?: string;
   videoFile?: any;
+  thumbnailUrl?: string;
 }
 
 export function generateEmailHTML(data: EmailTemplateData): string {
@@ -23,12 +24,13 @@ export function generateEmailHTML(data: EmailTemplateData): string {
     portfolioUrl,
     endorsementText,
     recipientName = 'there',
-    videoFile
+    videoFile,
+    thumbnailUrl
   } = data;
 
   const landingPageUrl = `https://referiq.netlify.app/referral/${referralId}`;
-  // Use the Supabase storage URL for the video thumbnail
-  const videoThumbnailUrl = videoFile ? `https://tvmmppyvqiqfgefsoamb.supabase.co/storage/v1/object/public/email-assets/video-thumbnail.jpg` : null;
+  // Use the custom thumbnail URL if provided, otherwise fall back to default
+  const videoThumbnailUrl = thumbnailUrl || (videoFile ? `https://tvmmppyvqiqfgefsoamb.supabase.co/storage/v1/object/public/email-assets/video-thumbnail.jpg` : null);
 
   return `
 <!DOCTYPE html>

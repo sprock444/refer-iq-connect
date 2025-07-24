@@ -236,7 +236,7 @@ const Index = () => {
         relationship: formData.relationship as 'friend' | 'former-colleague' | 'family' | 'classmate' | 'other',
         linkedinUrl: formData.linkedinUrl || undefined,
         endorsementText: formData.endorsement || undefined,
-      }, formData.resumeFile, formData.videoFile);
+      }, formData.resumeFile, formData.videoFile, thumbnailUrl);
 
       console.log('Referral created:', referral);
       setCreatedReferral(referral);
@@ -377,7 +377,7 @@ const Index = () => {
                 </Card>
                 
                 <EmailPreview 
-                  formData={formData} 
+                  formData={{...formData, thumbnailUrl}}
                   referralId={createdReferral.id}
                 />
               </div>

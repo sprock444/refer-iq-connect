@@ -34,6 +34,7 @@ export type Database = {
           relationship: Database["public"]["Enums"]["relationship_type"]
           resume_file_path: string | null
           status: string | null
+          thumbnail_url: string | null
           updated_at: string | null
           video_file_path: string | null
           why_fit: string | null
@@ -57,6 +58,7 @@ export type Database = {
           relationship: Database["public"]["Enums"]["relationship_type"]
           resume_file_path?: string | null
           status?: string | null
+          thumbnail_url?: string | null
           updated_at?: string | null
           video_file_path?: string | null
           why_fit?: string | null
@@ -80,6 +82,7 @@ export type Database = {
           relationship?: Database["public"]["Enums"]["relationship_type"]
           resume_file_path?: string | null
           status?: string | null
+          thumbnail_url?: string | null
           updated_at?: string | null
           video_file_path?: string | null
           why_fit?: string | null

@@ -23,6 +23,7 @@ interface EmailPreviewProps {
     resumeFile: File | null;
     linkedinUrl: string;
     endorsement: string;
+    thumbnailUrl?: string;
   };
   referralId?: string;
 }
@@ -69,7 +70,8 @@ const EmailPreview: React.FC<EmailPreviewProps> = ({ formData, referralId }) => 
         portfolioUrl: undefined, // Add separate portfolio field if needed
         endorsementText: formData.endorsement,
         recipientName: `${formData.recipientFirstName} ${formData.recipientLastName}`,
-        videoFile: formData.videoFile
+        videoFile: formData.videoFile,
+        thumbnailUrl: formData.thumbnailUrl
       });
 
       console.log('Sending email with referralId:', referralId);
