@@ -101,9 +101,16 @@ const Index = () => {
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        // Wait for video to load metadata
-        videoRef.current.onloadedmetadata = () => {
+        
+        // Ensure video plays and is visible
+        videoRef.current.onloadedmetadata = async () => {
           console.log('Video metadata loaded, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
+          try {
+            await videoRef.current?.play();
+            console.log('Video is now playing');
+          } catch (playError) {
+            console.error('Error playing video:', playError);
+          }
         };
       }
     } catch (error) {
