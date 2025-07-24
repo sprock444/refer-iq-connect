@@ -20,6 +20,7 @@ export interface ReferralData {
   cultureAlignment?: string;
   resumeFilePath?: string;
   videoFilePath?: string;
+  thumbnailUrl?: string;
   status?: string;
 }
 
@@ -71,7 +72,7 @@ export const useReferrals = () => {
     }
   };
 
-  const createReferral = async (data: ReferralData, resumeFile?: File | null, videoFile?: File | null) => {
+  const createReferral = async (data: ReferralData, resumeFile?: File | null, videoFile?: File | null, thumbnailUrl?: string | null) => {
     setIsLoading(true);
     try {
       let resumeFilePath = data.resumeFilePath;
@@ -106,6 +107,7 @@ export const useReferrals = () => {
           culture_alignment: data.cultureAlignment,
           resume_file_path: resumeFilePath,
           video_file_path: videoFilePath,
+          thumbnail_url: thumbnailUrl,
           status: data.status || 'pending'
         })
         .select()

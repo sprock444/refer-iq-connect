@@ -12,6 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { EmailPreview } from "@/components/email";
 import { useReferrals } from "@/hooks/useReferrals";
 import { supabase } from "@/integrations/supabase/client";
+import { ThumbnailCapture, VideoThumbnail } from '@/utils/videoThumbnails';
+import ThumbnailSelector from '@/components/ThumbnailSelector';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -20,9 +22,13 @@ const Index = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const thumbnailCaptureRef = useRef<ThumbnailCapture | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [showCamera, setShowCamera] = useState<'video' | null>(null);
+  const [showCamera, setShowCamera] = useState<'video' | 'thumbnails' | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [capturedThumbnails, setCapturedThumbnails] = useState<VideoThumbnail[]>([]);
+  const [selectedThumbnail, setSelectedThumbnail] = useState<VideoThumbnail | null>(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     referrerName: "",
@@ -132,7 +138,11 @@ const Index = () => {
   };
 
   const startVideoRecording = () => {
-    if (stream) {
+    if (stream && videoRef.current) {
+      // Initialize thumbnail capture
+      thumbnailCaptureRef.current = new ThumbnailCapture();
+      thumbnailCaptureRef.current.startCapturing(videoRef.current, 3000); // Capture every 3 seconds
+      
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
       
@@ -143,14 +153,25 @@ const Index = () => {
       };
       
       mediaRecorder.onstop = () => {
+        // Stop thumbnail capture
+        thumbnailCaptureRef.current?.stopCapturing();
+        const thumbnails = thumbnailCaptureRef.current?.getThumbnails() || [];
+        setCapturedThumbnails(thumbnails);
+        
         const blob = new Blob(chunks, { type: 'video/webm' });
         const file = new File([blob], 'video-endorsement.webm', { type: 'video/webm' });
         setFormData({ ...formData, videoFile: file });
-        stopCamera();
+        
+        // Show thumbnail selection if we have thumbnails
+        if (thumbnails.length > 0) {
+          setShowCamera('thumbnails');
+        } else {
+          stopCamera();
+        }
         
         toast({
           title: "Video recorded",
-          description: "Video endorsement is ready to upload with your referral.",
+          description: thumbnails.length > 0 ? "Select a thumbnail for your video." : "Video endorsement is ready to upload with your referral.",
         });
       };
       
@@ -165,6 +186,29 @@ const Index = () => {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
+  };
+
+  const handleThumbnailConfirm = async () => {
+    if (selectedThumbnail && thumbnailCaptureRef.current) {
+      try {
+        const url = await thumbnailCaptureRef.current.uploadThumbnail(selectedThumbnail);
+        setThumbnailUrl(url);
+        
+        toast({
+          title: "Thumbnail uploaded",
+          description: "Thumbnail has been saved for your video.",
+        });
+      } catch (error) {
+        console.error('Error uploading thumbnail:', error);
+        toast({
+          title: "Upload failed",
+          description: "Failed to upload thumbnail. Please try again.",
+          variant: "destructive"
+        });
+      }
+    }
+    
+    stopCamera();
   };
 
   const stopCamera = () => {
@@ -227,36 +271,61 @@ const Index = () => {
       {/* Camera Modal */}
       {showCamera && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="text-center mb-4">
-              <h3 className="text-lg font-semibold">Record Video Endorsement</h3>
-            </div>
-            
-            <div className="relative">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full rounded-lg"
-              />
-              <canvas ref={canvasRef} className="hidden" />
-            </div>
-            
-            <div className="flex justify-center space-x-4 mt-4">
-              {!isRecording ? (
-                <Button onClick={startVideoRecording} className="bg-red-600 hover:bg-red-700">
-                  <Video className="w-4 h-4 mr-2" />
-                  Start Recording
-                </Button>
-              ) : (
-                <Button onClick={stopVideoRecording} className="bg-gray-600 hover:bg-gray-700">
-                  Stop Recording
-                </Button>
-              )}
-              <Button onClick={stopCamera} variant="outline">
-                Cancel
-              </Button>
-            </div>
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            {showCamera === 'video' && (
+              <>
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-semibold">Record Video Endorsement</h3>
+                </div>
+                
+                <div className="relative">
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    className="w-full rounded-lg"
+                  />
+                  <canvas ref={canvasRef} className="hidden" />
+                </div>
+                
+                <div className="flex justify-center space-x-4 mt-4">
+                  {!isRecording ? (
+                    <Button onClick={startVideoRecording} className="bg-red-600 hover:bg-red-700">
+                      <Video className="w-4 h-4 mr-2" />
+                      Start Recording
+                    </Button>
+                  ) : (
+                    <Button onClick={stopVideoRecording} className="bg-gray-600 hover:bg-gray-700">
+                      Stop Recording
+                    </Button>
+                  )}
+                  <Button onClick={stopCamera} variant="outline">
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {showCamera === 'thumbnails' && (
+              <>
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-semibold">Select Video Thumbnail</h3>
+                </div>
+                
+                <ThumbnailSelector
+                  thumbnails={capturedThumbnails}
+                  selectedThumbnail={selectedThumbnail}
+                  onSelect={setSelectedThumbnail}
+                  onConfirm={handleThumbnailConfirm}
+                />
+                
+                <div className="flex justify-center space-x-4 mt-4">
+                  <Button onClick={stopCamera} variant="outline">
+                    Skip Thumbnail Selection
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
