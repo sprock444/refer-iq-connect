@@ -170,8 +170,13 @@ const Index = () => {
   };
 
   const startVideoRecording = () => {
-    if (stream && videoRef.current && thumbnailCaptureRef.current) {
+    if (stream && videoRef.current) {
       console.log('Starting video recording...');
+      
+      // Ensure thumbnail capture is initialized
+      if (!thumbnailCaptureRef.current) {
+        thumbnailCaptureRef.current = new ThumbnailCapture();
+      }
       
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
