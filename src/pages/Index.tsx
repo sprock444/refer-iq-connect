@@ -283,7 +283,9 @@ const Index = () => {
                     ref={videoRef}
                     autoPlay
                     playsInline
-                    className="w-full rounded-lg"
+                    muted
+                    className="w-full rounded-lg bg-gray-900"
+                    style={{ aspectRatio: '16/9' }}
                   />
                   <canvas ref={canvasRef} className="hidden" />
                 </div>
